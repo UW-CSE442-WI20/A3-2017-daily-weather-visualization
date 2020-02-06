@@ -4,8 +4,7 @@ d3.csv("../SpotifyDaily.csv", function(data) {
   }
 });
 
-d3.csv("../SpotifyDaily.csv", function(data) {
-
+d3.csv("../SpotifyDaily.csv", function(data) 
   for (var i = 0; i < data.length; i++) {
     if (data[i].Country == "United States") {
       console.log(data[i]);
