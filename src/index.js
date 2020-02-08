@@ -19,8 +19,8 @@ var countriesName = [	'Canada',	'Denmark',	'Greece',	'Iceland',	'Mexico',	'Phili
 'Brazil',	'Germany',	'United Kingdom',	'Israel',	'Peru',	'Slovakia',	'global'];
 
 var dataset;
-
-d3.csv("../top10perCountry2019/streamsus10.csv", function(error, data) {
+var headerNames;
+d3.csv("../top10perCountry2019/streamsglobal10.csv", function(error, data) {
   if (error && error.target.status === 404) {
     console.log("File not found")
   }
@@ -28,10 +28,10 @@ d3.csv("../top10perCountry2019/streamsus10.csv", function(error, data) {
   console.log("File empty")
   }
   var i;
-  var headerNames = d3.keys(data[0]);
+  headerNames = d3.keys(data[0]);
 
   for (i = 0; i < data.length; i++) {
-      console.log(data[i]);
+     // console.log(data[i]);
 
   }
   dataset = data;
