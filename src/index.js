@@ -20,7 +20,7 @@ var countriesName = [	'Canada',	'Denmark',	'Greece',	'Iceland',	'Mexico',	'Phili
 
 
 var dates = [	'1/1/19', '12/31/19'];
-
+//var dateArray = getDateArray(new Date('2019-01-01'),new Date('2020-01-01'))
 var dateSelect;
 var dataset = [];
 var headerNames;
@@ -32,6 +32,23 @@ var fileName;
 
 var countryID; 
 
+
+
+
+var startDate = new Date("2019-01-01"); //YYYY-MM-DD
+var endDate = new Date("2020-01-01"); //YYYY-MM-DD
+
+var getDateArray = function(start, end) {
+    var arr = new Array();
+    var dt = new Date(start);
+    while (dt <= end) {
+        arr.push(new Date(dt));
+        dt.setDate(dt.getDate() + 1);
+    }
+    return arr;
+}
+
+var dateArr = getDateArray(startDate, endDate);
 
 d3.csv("../top10perCountry2019/streamsglobal10.csv", function(error, data) {
   if (error && error.target.status === 404) {
@@ -102,7 +119,7 @@ d3.selectAll("p")
        // var dateS = d3.select("#vis-container-date").property('value');
         var country = d3.select(this).property('value');
         index = countriesName.indexOf(country);
-      console.log(dateSelect);
+      //console.log(dateSelect);
         
           fileName = "../top10perCountry2019/streams" + countriesList[index] + "10.csv";
       
@@ -118,27 +135,13 @@ d3.selectAll("p")
           
            
             dataset = data;
-/*
-            var filtered = dataset.filter(function(d) {
-              for (var i = 0; i < dataset.length; i++) {
-                
-              return d['date'] === '12/31/19';
-              }
-            })
-*/
-          //  console.log(filtered);
-           
+            
+            console.log(data);
           });
           setTimeout(function(){
-            //console.log(dataset);
+           
             },200);
-            console.log(typeof(dateSelect));
-            for (var i = 0; i < dataset.length; i++) {
-              if (dataset[i].date === dateSelect.toString()) {
-                  console.log(dataset[i]);
-              }
-            }
-            console.log(headerNames);
+
 
       });
 
@@ -150,7 +153,13 @@ d3.selectAll("p")
       .on("change", function(){
         dateSelect = d3.select(this).property('value');
         console.log(dateSelect);
+        var filtered = dataset.filter(function(d) {
+          for (var i = 0; i < dataset.length; i++) {
+          return d['date'] === "2019-12-30";
+          }
+        })
 
+        console.log(filtered);
       });
 
       
@@ -174,15 +183,18 @@ dropdown.selectAll("option")
 
 
 dateDropdown.selectAll("option")
-.data(dates)
+.data(dateArr)
 .enter().append("option")
 .attr("value", function (d) { return d; })
 .text(function (d) {
-    return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+    return d.toString(); // capitalize 1st letter
 
     
 });
  
+
+
+
 
 
 
@@ -207,7 +219,7 @@ d3.selectAll("p")
       //filtered_data(paragraphID);
       var filtered = dataset.filter(function(d) {
         for (var i = 0; i < dataset.length; i++) {
-        return d['date'] === dateSelect;
+        return d['date'] === "2019-12-30";
         }
       })
       
