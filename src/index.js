@@ -35,7 +35,7 @@ var countryID;
 
 
 
-var startDate = new Date("2019-01-01"); //YYYY-MM-DD
+var startDate = new Date("2019-01-02"); //YYYY-MM-DD
 var endDate = new Date("2020-01-01"); //YYYY-MM-DD
 
 var getDateArray = function(start, end) {
@@ -155,11 +155,19 @@ d3.selectAll("p")
         console.log(dateSelect);
         var filtered = dataset.filter(function(d) {
           for (var i = 0; i < dataset.length; i++) {
-          return d['date'] === "2019-12-30";
+          return d['date'] === getDateString(dateSelect);
           }
         })
 
         console.log(filtered);
+        barDataset = filtered;
+        var filtered2 = dataset.filter(function(d) {
+          for (var i = 0; i < dataset.length; i++) {
+          return d['Streams'];
+          }
+        })
+
+      // console.log(filtered2);
       });
 
       
@@ -185,15 +193,18 @@ dropdown.selectAll("option")
 dateDropdown.selectAll("option")
 .data(dateArr)
 .enter().append("option")
-.attr("value", function (d) { return d; })
+.attr("value", function (d) { return getDateString(d); })
 .text(function (d) {
-    return d.toString(); // capitalize 1st letter
+    return (d.getMonth() + 1)+ '/' + (d.getDate() ) + '/' + d.getFullYear() ; // capitalize 1st letter
 
     
 });
  
 
-
+var getDateString = function(d) {
+  
+  return ( d.getFullYear()  + "-" + (d.getMonth() + 1) + "-" + d.getDate());
+}
 
 
 
@@ -230,10 +241,58 @@ d3.selectAll("p")
      //}
      console.log(headerNames);
      console.log(filtered);
+     barDataset = filtered;
       
     } else {
       console.log("global")
     }
   });
 
+ //Width and height
+ var w = 500;
+ var h = 100;
+ var barPadding = 1;
  
+ var barDataset;
+ 
+ //Create SVG element
+ var svg = d3.select("body")
+       .append("svg")
+       .attr("width", w)
+       .attr("height", h);
+
+ svg.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("x", function(d, i) {
+        return i * (w / dataset.length);
+    })
+    .attr("y", function(d) {
+        return h - (d * 4);
+    })
+    .attr("width", w / dataset.length - barPadding)
+    .attr("height", function(d) {
+        return d * 4;
+    })
+    .attr("fill", function(d) {
+     return "rgb(0, 0, " + Math.round(d * 10) + ")";
+    });
+
+ svg.selectAll("text")
+    .data(dataset)
+    .enter()
+    .append("text")
+    .text(function(d) {
+        return d;
+    })
+    .attr("text-anchor", "middle")
+    .attr("x", function(d, i) {
+        return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
+    })
+    .attr("y", function(d) {
+        return h - (d * 4) + 14;
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "11px")
+    .attr("fill", "white");
