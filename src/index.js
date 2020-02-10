@@ -177,13 +177,17 @@ d3.selectAll("p")
         })
         //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
 var barDataset = [];
+var songNames = [];
         console.log(filtered);
        
         for (var i = 0; i < filtered.length; i++) {
           barDataset.push(parseInt(filtered[i].Streams)/1000000.0)
+          songNames.push(filtered[i]['Track Name'])
+        
          }
+         console.log(songNames);
          var w = 500;
-         var h = 100;
+         var h = 300;
          var barPadding = 1;
          console.log(headerNames);
          console.log(filtered);
@@ -191,7 +195,7 @@ var barDataset = [];
         // barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
     
          xScale.domain(d3.range(barDataset.length));
-         yScale.domain([0, d3.max(barDataset, function(d) { return d.value; })]);
+         yScale.domain([0, d3.max(barDataset, function(d) { return d.value * 50; })]);
     
          //Select…
          var bars = svg.selectAll("rect")
@@ -202,11 +206,11 @@ var barDataset = [];
            .append("rect")
            .attr("x", w)
            .attr("y", function(d) {
-             return h - d * 20;
+             return h - d * 50;
            })
            .attr("width", xScale.bandwidth())
            .attr("height", function(d) {
-             return d * 20;
+             return d * 50;
            })
            .attr("fill", function(d) {
              return "rgb(0, 0, " + (d.value * 10) + ")";
@@ -218,11 +222,11 @@ var barDataset = [];
              return xScale(i);
            })
            .attr("y", function(d) {
-             return h - d *20 ;
+             return h - d *50 ;
            })
            .attr("width", xScale.bandwidth())
            .attr("height", function(d) {
-             return d*20;
+             return d*50;
            });
            
 	//Exit…
@@ -236,8 +240,27 @@ var barDataset = [];
   svg.selectAll("text").remove();
           //Select…
           
-          svg.selectAll("text")
+          svg.selectAll("text.title")
           .data(barDataset)
+          .enter()
+          .append("text")
+          .text(function(d) {
+              return Math.round(d*1000000);
+          })
+          .attr("text-anchor", "middle")
+          .attr("x", function(d, i) {
+              return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
+          })
+          .attr("y", function(d) {
+              return h - (d * 50) + 14;
+          })
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "10px")
+          .attr("fill", "white");
+
+
+          svg.selectAll("text.value")
+          .data(songNames)
           .enter()
           .append("text")
           .text(function(d) {
@@ -248,11 +271,12 @@ var barDataset = [];
               return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
           })
           .attr("y", function(d) {
-              return h - (d * 20) + 14;
+              return h - (( 10 - songNames.indexOf(d )) * 30) + 14;
           })
           .attr("font-family", "sans-serif")
-          .attr("font-size", "11px")
-          .attr("fill", "white");
+          .attr("font-size", "10px")
+          .attr("fill", "black");
+
 
 
           /*
@@ -366,7 +390,7 @@ d3.selectAll("p")
     // console.log(dataset[i]);
      //}
      var w = 500;
-     var h = 100;
+     var h = 300;
      var barPadding = 1;
      console.log(headerNames);
      console.log(filtered);
@@ -385,11 +409,11 @@ d3.selectAll("p")
        .append("rect")
        .attr("x", w)
        .attr("y", function(d) {
-         return h - d * 20;
+         return h - d * 50;
        })
        .attr("width", xScale.bandwidth())
        .attr("height", function(d) {
-         return d * 20;
+         return d * 50;
        })
        .attr("fill", function(d) {
          return "rgb(0, 0, " + (d.value * 10) + ")";
@@ -401,11 +425,11 @@ d3.selectAll("p")
          return xScale(i);
        })
        .attr("y", function(d) {
-         return h - d *20 ;
+         return h - d *50 ;
        })
        .attr("width", xScale.bandwidth())
        .attr("height", function(d) {
-         return d*20;
+         return d*50;
        });
        
        svg.selectAll("text")
@@ -420,10 +444,10 @@ d3.selectAll("p")
            return i * (w / 10) + (w / 10 - barPadding) / 2;
        })
        .attr("y", function(d) {
-           return h - (d * 20) + 14;
+           return h - (d * 50) + 14;
        })
        .attr("font-family", "sans-serif")
-       .attr("font-size", "11px")
+       .attr("font-size", "10px")
        .attr("fill", "white");
       
     } else {
@@ -483,7 +507,7 @@ d3.selectAll("p")
     */
 			//Width and height
 			var w = 500;
-			var h = 100;
+			var h = 300;
 			var barPadding = 1;
 			
 			var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13];
@@ -535,11 +559,11 @@ d3.selectAll("p")
            .append("rect")
            .attr("x", w)
            .attr("y", function(d) {
-             return h - d * 20;
+             return h - d * 50;
            })
            .attr("width", xScale.bandwidth())
            .attr("height", function(d) {
-             return d * 20;
+             return d * 50;
            })
            .attr("fill", function(d) {
              return "rgb(0, 0, " + (d.value * 10) + ")";
@@ -551,11 +575,11 @@ d3.selectAll("p")
              return xScale(i);
            })
            .attr("y", function(d) {
-             return h - d *20 ;
+             return h - d *50 ;
            })
            .attr("width", xScale.bandwidth())
            .attr("height", function(d) {
-             return d*20;
+             return d*50;
            });
            
            svg.selectAll("text")
@@ -563,15 +587,15 @@ d3.selectAll("p")
            .enter()
            .append("text")
            .text(function(d) {
-               return d;
+               return Math.round(d*1000000);
            })
            .attr("text-anchor", "middle")
            .attr("x", function(d, i) {
                return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
            })
            .attr("y", function(d) {
-               return h - (d * 20) + 14;
+               return h - (d * 50) + 14;
            })
            .attr("font-family", "sans-serif")
-           .attr("font-size", "11px")
+           .attr("font-size", "10px")
            .attr("fill", "white");
