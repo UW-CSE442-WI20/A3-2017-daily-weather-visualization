@@ -1,0 +1,4 @@
+#slider text {
+    text-anchor: end;
+    transform: rotate(-90deg);
+}
