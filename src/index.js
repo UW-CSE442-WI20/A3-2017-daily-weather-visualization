@@ -275,7 +275,7 @@ var songNames = [];
           })
           .attr("font-family", "sans-serif")
           .attr("font-size", "10px")
-          .attr("fill", "black");
+          .attr("fill", "red");
 
 
 
@@ -582,7 +582,7 @@ d3.selectAll("p")
              return d*50;
            });
            
-           svg.selectAll("text")
+           svg.selectAll("text.title")
            .data(barDataset)
            .enter()
            .append("text")
@@ -599,3 +599,23 @@ d3.selectAll("p")
            .attr("font-family", "sans-serif")
            .attr("font-size", "10px")
            .attr("fill", "white");
+
+
+
+          svg.selectAll("text.value")
+          .data(songNames)
+          .enter()
+          .append("text")
+          .text(function(d) {
+              return d;
+          })
+          .attr("text-anchor", "middle")
+          .attr("x", function(d, i) {
+              return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
+          })
+          .attr("y", function(d) {
+              return h - (( 10 - songNames.indexOf(d )) * 30) + 14;
+          })
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "10px")
+          .attr("fill", "black");
