@@ -42,7 +42,19 @@ var getDateArray = function(start, end) {
     var arr = new Array();
     var dt = new Date(start);
     while (dt <= end) {
-        arr.push(new Date(dt));
+      var date = new Date(dt);
+        //arr.push(new Date(dt));
+        
+        var dateString = date.getFullYear()  + "-";
+        if (date.getMonth() < 9) {
+          dateString = dateString + "0";
+        } 
+        dateString = dateString + (date.getMonth() + 1) + "-";
+        if (date.getDate() < 10) {
+          dateString = dateString + "0";
+        } 
+        dateString = dateString + date.getDate();
+        arr.push(dateString);
         dt.setDate(dt.getDate() + 1);
     }
     return arr;
@@ -151,23 +163,26 @@ d3.selectAll("p")
       var dateDropdown = d3.select("#vis-container-date")
       .insert("select", "svg")
       .on("change", function(){
-        dateSelect = d3.select(this).property('value');
-        console.log(dateSelect);
+       dateSelect = d3.select(this).property('value');
+    //   dateSelect = d3.select("#vis-container-date").property('text');
+
+     //   console.log(dateSelect);
         var filtered = dataset.filter(function(d) {
           for (var i = 0; i < dataset.length; i++) {
-          return d['date'] === getDateString(dateSelect);
+           // var dateString = dateSelect.getFullYear()  + "-" + (dateSelect.getMonth() + 1) + "-" + dateSelect.getDate()
+            //console.log(dateSelect);
+           // console.log(dateString);
+          return d['date'] === dateSelect;
           }
         })
 
         console.log(filtered);
-        barDataset = filtered;
-        var filtered2 = dataset.filter(function(d) {
-          for (var i = 0; i < dataset.length; i++) {
-          return d['Streams'];
-          }
-        })
-
-      // console.log(filtered2);
+       
+        for (var i = 0; i < filtered.length; i++) {
+          barDataset.push(filtered[i].Streams)
+         }
+       
+       console.log(barDataset);
       });
 
       
@@ -193,13 +208,16 @@ dropdown.selectAll("option")
 dateDropdown.selectAll("option")
 .data(dateArr)
 .enter().append("option")
-.attr("value", function (d) { return getDateString(d); })
+.attr("value", function (d) { return d; })
 .text(function (d) {
-    return (d.getMonth() + 1)+ '/' + (d.getDate() ) + '/' + d.getFullYear() ; // capitalize 1st letter
+return d;
+   
+    //return (d.getMonth() + 1)+ '/' + (d.getDate() ) + '/' + d.getFullYear() ; // capitalize 1st letter
 
     
 });
  
+/*
 
 var getDateString = function(d) {
   
@@ -207,16 +225,16 @@ var getDateString = function(d) {
 }
 
 
+*/
 
-
-
+/*
 
 for (var i = 0; i < dataset.length; i++) {
   if (dataset[i].date == dateSelect) {
-      console.log(dataset[i]);
+      console.log(dataset[i].Streams);
   }
 }
-
+*/
 
 //On click, update with new data			
 d3.selectAll("p")
@@ -241,7 +259,6 @@ d3.selectAll("p")
      //}
      console.log(headerNames);
      console.log(filtered);
-     barDataset = filtered;
       
     } else {
       console.log("global")
@@ -253,7 +270,7 @@ d3.selectAll("p")
  var h = 100;
  var barPadding = 1;
  
- var barDataset;
+ var barDataset = [];
  
  //Create SVG element
  var svg = d3.select("body")
@@ -266,12 +283,12 @@ d3.selectAll("p")
     .enter()
     .append("rect")
     .attr("x", function(d, i) {
-        return i * (w / dataset.length);
+        return i * (w / barDataset.length);
     })
     .attr("y", function(d) {
         return h - (d * 4);
     })
-    .attr("width", w / dataset.length - barPadding)
+    .attr("width", w / barDataset.length - barPadding)
     .attr("height", function(d) {
         return d * 4;
     })
@@ -288,7 +305,7 @@ d3.selectAll("p")
     })
     .attr("text-anchor", "middle")
     .attr("x", function(d, i) {
-        return i * (w / dataset.length) + (w / dataset.length - barPadding) / 2;
+        return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
     })
     .attr("y", function(d) {
         return h - (d * 4) + 14;
