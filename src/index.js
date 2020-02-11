@@ -51,16 +51,16 @@ function loadInitialData() {
     // TODO -- Not hardcode this!!
     songNames = ["Sunflower - Spider-Man: Into the Spider-Verse", "thank u, next", "Wow.", "Without Me", "Taki Taki (with Selena Gomez, Ozuna & Cardi B)", "Calma - Remix", "Sweet but Psycho", "MIA (feat. Drake)", "High Hopes", "Happier"];
     barDataset = [
-        [parseInt("4323160"), '1'],
-        [parseInt("4275439"), '2'],
-        [parseInt("3947420"), '3'],
-        [parseInt("3307383"), '4'],
-        [parseInt("3188386"), '5'],
-        [parseInt("2896056"), '6'],
-        [parseInt("2642425"), '7'],
-        [parseInt("2598097"), '8'],
-        [parseInt("2512089"), '9'],
-        [parseInt("2419735"), '10']];
+        [parseInt("4323160"), '10'],
+        [parseInt("4275439"), '9'],
+        [parseInt("3947420"), '8'],
+        [parseInt("3307383"), '7'],
+        [parseInt("3188386"), '6'],
+        [parseInt("2896056"), '5'],
+        [parseInt("2642425"), '4'],
+        [parseInt("2598097"), '3'],
+        [parseInt("2512089"), '2'],
+        [parseInt("2419735"), '1']];
 
     // load globl data
     d3.csv("streamsglobal10.csv").then(function (data) {
@@ -98,7 +98,7 @@ function updateGraph(barDataset, songNames) {
         .merge(bars)	//Update…
         .transition()
         .duration(500)
-        .attr("x", function (d) {
+        .attr("x", function (d, i) {
             return x(d[1]);
         })
         .attr("y", function (d) {
@@ -131,12 +131,15 @@ function updateGraph(barDataset, songNames) {
             return (9 - i) * (h / barDataset.length) + 27;
         })
         .attr("x", function (d) {
-            return x(d[0]) - 8;
+            var index = d[1];
+            var streams = barDataset[index - 1][0];
+            return x(streams) - 8;
         })
         .attr("font-family", "sans-serif")
         .attr("font-size", "14px")
         .attr("font-weight", 550)
         .attr("fill", "black")
+
 }
 
 var getDateArray = function (start, end) {
@@ -144,7 +147,7 @@ var getDateArray = function (start, end) {
     var dt = new Date(start);
     while (dt <= end) {
         var date = new Date(dt);
-        
+
         var dateString = date.getFullYear() + "-";
         if (date.getMonth() < 9) {
             dateString = dateString + "0";
@@ -162,13 +165,13 @@ var getDateArray = function (start, end) {
 var dateArr = getDateArray(new Date("2019-01-02"), new Date("2020-01-01"));
 dateSelect = dateArr[0];
 
-
+// update graph based on country dropdown
 var countryDropdown = d3.select("#vis-container-country")
     .insert("select", "svg")
     .on("change", function () {
 
         var country = d3.select(this).property('value');
-        
+
 
         var index = countriesName.indexOf(country);
         var fileName = "streams" + countriesList[index] + "10.csv";
@@ -183,7 +186,7 @@ var countryDropdown = d3.select("#vis-container-country")
             var barDataset = [[]];
             var songNames = [''];
             for (var i = 0; i < filtered.length; i++) {
-                var arrayObj = [parseInt(filtered[i].Streams), (i + 1) + ""];
+                var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
                 songNames[i] = filtered[i]['Track Name'];
                 barDataset[i] = arrayObj;
             }
@@ -192,7 +195,7 @@ var countryDropdown = d3.select("#vis-container-country")
         });
     });
 
-
+// update graph based on date dropdown
 var dateDropdown = d3.select("#vis-container-date")
     .insert("select", "svg")
     .on("change", function () {
@@ -207,7 +210,7 @@ var dateDropdown = d3.select("#vis-container-date")
         var songNames = [''];
 
         for (var i = 0; i < filtered.length; i++) {
-            var arrayObj = [parseInt(filtered[i].Streams), (i + 1) + ""];
+            var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
             songNames[i] = filtered[i]['Track Name'];
             barDataset[i] = arrayObj;
         }
@@ -263,7 +266,7 @@ bars.enter().append("rect")
     .attr("y", function (d) {
         return y(d[1]);
     })
-    .attr("fill", function (d) {
+    .attr("fill", function () {
         return "rgb(30, 215, 96)";
     })
     .attr("height", y.bandwidth());
@@ -280,6 +283,7 @@ svg.append("g")
 svg.append("g")
     .call(d3.axisLeft(y).tickFormat(""));
 
+
 svg.selectAll("text.value")
     .data(barDataset)
     .enter()
@@ -289,17 +293,22 @@ svg.selectAll("text.value")
     })
     .attr("text-anchor", "end")
     .attr("y", function (d, i) {
-        return (9 - i) * (h / barDataset.length) + 27;
+        return  (9 - i) * (h / barDataset.length) + 27;
     })
     .attr("x", function (d) {
-        return x(d[0]) - 8;
+        var index = d[1];
+        var streams = barDataset[index - 1][0];
+        return x(streams) - 8;
     })
     .attr("font-family", "sans-serif")
     .attr("font-size", "14px")
     .attr("font-weight", 550)
     .attr("fill", "black");
+
+
+// SLIDER STUFF !!
 "use strict";
-(function() {
+(function () {
 
     // MODULE GLOBAL VARIABLES AND HELPER FUNCTIONS CAN BE PLACED
     // HERE
@@ -309,8 +318,8 @@ svg.selectAll("text.value")
 
 
 
-  
-    window.onload = function() {
+
+    window.onload = function () {
         initSlider();
 
         /* Trying to reposition axis labels for slider
@@ -323,186 +332,168 @@ svg.selectAll("text.value")
 
 
     function playSlider() {
-        
+
     }
 
     // Code inspired/provided by https://github.com/johnwalley/d3-simple-slider v1.5.4 Copyright 2019 John Walley
     function initSlider() {
-          weeks2019 = d3.range(0, 53).map(function(d) {
-            return new Date(2019, 0, 1 + 7*d);
-          });
-    
-          sliderTime = d3
+        weeks2019 = d3.range(0, 53).map(function (d) {
+            return new Date(2019, 0, 1 + 7 * d);
+        });
+
+        sliderTime = d3
             .sliderBottom()
             .min(d3.min(weeks2019))
             .max(d3.max(weeks2019))
             .step(7)
             .width(1700)
-           // .tickFormat(d3.timeFormat('%Y-%m-%d'))
-           // .tickValues(weeks2019)
+            // .tickFormat(d3.timeFormat('%Y-%m-%d'))
+            // .tickValues(weeks2019)
             .displayValue(false)
             .on('onchange', val => {
-              d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(val));
-              window[sliderDate] =  d3.timeFormat('%Y-%m-%d')(val);
+                d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(val));
+                window[sliderDate] = d3.timeFormat('%Y-%m-%d')(val);
 
-              dateSelect = d3.timeFormat('%Y-%m-%d')(val);
-              console.log(localStorage.getItem('currDate'));
-           //   dateSelect = d3.select("#vis-container-date").property('text');
-       
-            //   console.log(dateSelect);
-               var filtered = dataset.filter(function(d) {
-                 for (var i = 0; i < dataset.length; i++) {
-             
-                 return d['date'] === dateSelect;
-                 }
-               })
-               
-               //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
-       var barDataset = [[]];
-       var songNames = [''];
-              // console.log(filtered);
-               for (var i = 0; i < filtered.length; i++) {
-                 var arrayObj = [parseInt(filtered[i].Streams), ( 10 - i )+""];
-                 var name = filtered[i]['Track Name'];
-                 if (filtered[i]['Track Name'].length > 30) {
-                   name = name.substring(0,31) + "...";
-                 }
-       
-              songNames[i] = name; //filtered[i]['Track Name'];
-                 barDataset[i] = arrayObj;
-               
+                dateSelect = d3.timeFormat('%Y-%m-%d')(val);
+                console.log(localStorage.getItem('currDate'));
+                //   dateSelect = d3.select("#vis-container-date").property('text');
+
+                //   console.log(dateSelect);
+                var filtered = dataset.filter(function (d) {
+                    for (var i = 0; i < dataset.length; i++) {
+
+                        return d['date'] === dateSelect;
+                    }
+                })
+
+                //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
+                var barDataset = [[]];
+                var songNames = [''];
+                // console.log(filtered);
+                for (var i = 0; i < filtered.length; i++) {
+                    var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
+                    var name = filtered[i]['Track Name'];
+                    if (filtered[i]['Track Name'].length > 30) {
+                        name = name.substring(0, 31) + "...";
+                    }
+
+                    songNames[i] = name; //filtered[i]['Track Name'];
+                    barDataset[i] = arrayObj;
+
                 }
                 console.log(songNames);
                 var barPadding = 1;
-       
-                var margin = {
-                  top: 15,
-                  right: 25,
-                  bottom: 30,
-                  left: 60
-              };
-              
-              w= 960 - margin.left - margin.right;
-                  h = 500 - margin.top - margin.bottom;
-              
-                  //set the ranges
-                  var y = d3.scaleBand()
-                            .range([h, 0])
-                            .padding(0.1);
-                  
-                  var x = d3.scaleLinear()
-                            .range([0, w]);
-                  
-       
-                            //don't create new SVG each time. 
-              //Create SVG element
-              /*
-              var svg = d3.select("body").append("svg")
-                  .attr("width", w + margin.left + margin.right)
-                  .attr("height", h + margin.top + margin.bottom)
-                .append("g")
-                  .attr("transform", 
-                        "translate(" + margin.left + "," + margin.top + ")");
-              
-              */
-           
-              // Scale the range of the data in the domains
-              x.domain([0, d3.max(barDataset, function(d){ return d[0]; })])
-              y.domain(d3.range(1, barDataset.length + 1));
-              
-                   
-                 
-                     var bars = svg.selectAll("rect")
-                     .data(barDataset);
-               
-               bars.enter().append("rect")
-                 .attr("class", "bar")
-                 .attr("width", function(d) {return x(d[0]); } )
-                 .attr("y", function(d) { 
-                  return y(d[1]); 
-                })
-                .attr("fill", function(d) {
-                 return "rgb(30, 215, 96)";
-                })
-                 .attr("height", y.bandwidth())
-                 .merge(bars)	//Update…
-                  .transition()
-                  .duration(500)
-                  .attr("x", function(d, i) {
-                   return x(d[1]);
-                 })
-                  .attr("y", function(d) {
-                   return y(d[1]);
-                  })
-                  .attr("width", function(d) { return x(d[0]); } )
-                  .attr("height", y.bandwidth());
-          
-       
-                  svg.selectAll("text").remove();
-           
-       
-         svg.selectAll("g").remove();
-           // add the x Axis
-         svg.append("g")
-         .attr("transform", "translate(0," + h + ")")
-         .call(d3.axisBottom(x));
-       
-       // add the y Axis
-       svg.append("g")
-         .call(d3.axisLeft(y).tickFormat(""));
-       
-       
-       
-       
-       
-       
-       
-         svg.selectAll("text.value")
-         .data(barDataset)
-         .enter()
-         .append("text")
-         .text(function(d) {
-             return songNames[parseInt(d[1]) - 1];
-             
-             //d[1];
-         })
-         .attr("text-anchor", "end")
-         .attr("y", function(d, i) {
-             return (9 - i) * (h / barDataset.length ) + 27;
-         })
-         .attr("x", function(d) {
-           var index = d[1];
-           var streams = barDataset[index - 1][0];
-           return x(streams) - 8 ;
-         })
-         .attr("font-family", "sans-serif")
-         .attr("font-size", "14px")
-         .attr("font-weight", 550)
-         .attr("fill", "black");
-       
 
-              console.log(window[sliderDate]);
-              //localStorage.setItem('currDate', window[sliderDate]);
+                var margin = {
+                    top: 15,
+                    right: 25,
+                    bottom: 30,
+                    left: 60
+                };
+
+                w = 960 - margin.left - margin.right;
+                h = 500 - margin.top - margin.bottom;
+
+                //set the ranges
+                var y = d3.scaleBand()
+                    .range([h, 0])
+                    .padding(0.1);
+
+                var x = d3.scaleLinear()
+                    .range([0, w]);
+
+                // Scale the range of the data in the domains
+                x.domain([0, d3.max(barDataset, function (d) { return d[0]; })])
+                y.domain(d3.range(1, barDataset.length + 1));
+
+                var bars = svg.selectAll("rect")
+                    .data(barDataset);
+
+                bars.enter().append("rect")
+                    .attr("class", "bar")
+                    .attr("width", function (d) { return x(d[0]); })
+                    .attr("y", function (d) {
+                        return y(d[1]);
+                    })
+                    .attr("fill", function (d) {
+                        return "rgb(30, 215, 96)";
+                    })
+                    .attr("height", y.bandwidth())
+                    .merge(bars)	//Update…
+                    .transition()
+                    .duration(500)
+                    .attr("x", function (d, i) {
+                        return x(d[1]);
+                    })
+                    .attr("y", function (d) {
+                        return y(d[1]);
+                    })
+                    .attr("width", function (d) { return x(d[0]); })
+                    .attr("height", y.bandwidth());
+
+
+                svg.selectAll("text").remove();
+
+
+                svg.selectAll("g").remove();
+                // add the x Axis
+                svg.append("g")
+                    .attr("transform", "translate(0," + h + ")")
+                    .call(d3.axisBottom(x));
+
+                // add the y Axis
+                svg.append("g")
+                    .call(d3.axisLeft(y).tickFormat(""));
+
+
+
+
+
+
+
+                svg.selectAll("text.value")
+                    .data(barDataset)
+                    .enter()
+                    .append("text")
+                    .text(function (d) {
+                        return songNames[parseInt(d[1]) - 1];
+
+                    })
+                    .attr("text-anchor", "end")
+                    .attr("y", function (d, i) {
+                        return (9 - i) * (h / barDataset.length) + 27;
+                    })
+                    .attr("x", function (d) {
+                        var index = d[1];
+                        var streams = barDataset[index - 1][0];
+                        return x(streams) - 8;
+                    })
+                    .attr("font-family", "sans-serif")
+                    .attr("font-size", "14px")
+                    .attr("font-weight", 550)
+                    .attr("fill", "black");
+
+                //localStorage.setItem('currDate', window[sliderDate]);
             });
-         
-          gTime = d3
+
+        gTime = d3
             .select('div#slider')
             .append('svg')
             .attr('width', 960 - margin.left - margin.right)
             .attr('height', 500 - margin.top - margin.bottom)
             .append('g')
             .attr('transform', 'translate(30,30)');
-    
-          gTime.call(sliderTime);
-    
-          //initializes date shown on screen
-          d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
-         // module.exports.sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
-         sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
-   
-         //window[sliderDate ] = variables[varName ];
-       //  window[sliderDate ] = sliderDate;
-          
+
+        gTime.call(sliderTime);
+
+        //initializes date shown on screen
+        d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
+        // module.exports.sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
+        sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
+
+        //window[sliderDate ] = variables[varName ];
+        //  window[sliderDate ] = sliderDate;
+
     }
 })();
 //window[sliderDate ] = variables[varName ];
