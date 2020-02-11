@@ -32,9 +32,17 @@ li a:hover:not(.active) {
 }
   
 .active {
-   background-color: #4CAF50;
+    color: black;
+   background-color: #1ed760;
 }
 /* Navigation Styles */
+
+rect {
+    -moz-transition: all 0.25s;
+    -o-transition: all 0.25s;
+    -webkit-transition: all 0.25s;
+    transition: all 0.25s;
+}
 
 rect:hover {
     fill:orange;
