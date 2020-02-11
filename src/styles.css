@@ -37,5 +37,5 @@ li a:hover:not(.active) {
 /* Navigation Styles */
 
 rect:hover {
-    fill:orange;
+    fill:rgb(18, 145, 18);
 }
