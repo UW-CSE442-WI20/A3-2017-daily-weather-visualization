@@ -63,14 +63,7 @@ var dateArr = getDateArray(startDate, endDate);
 
 
 d3.csv("../top10perCountry2019/streamsglobal10.csv").then(function(data) {
-  /*
-  if (error && error.target.status === 404) {
-    console.log("File not found")
-  }
-  if(data.length === 0){
-  console.log("File empty")
-  }
-  */
+
   var i;
   headerNames = d3.keys(data[0]);
 
@@ -85,43 +78,7 @@ setTimeout(function(){
   //console.log(dataset);
   },200);
   
-/*
 
-//On click, update with new data			
-d3.selectAll("p")
-  .on("click", function() {
-
-    //See which p was clicked
-    var paragraphID = d3.select(this).attr("id");
-    
-    //Decide what to do next
-    //if (paragraphID == "us") {
-      fileName = "../top10perCountry2019/streams" + paragraphID + "10.csv";
-
-      d3.csv(fileName, function(error, data) {
-        if (error && error.target.status === 404) {
-          console.log("File not found")
-        }
-        if(data.length === 0){
-        console.log("File empty")
-        }
-        var i;
-        headerNames = d3.keys(data[0]);
-      
-        for (i = 0; i < data.length; i++) {
-           console.log(data[i]);
-      
-        }
-        dataset = data;
-      });
-      setTimeout(function(){
-        //console.log(dataset);
-        },200);
-
-
-  });
-
-  */
   
   var Countries = (countriesName).slice(0);
   Countries = Countries.sort();
@@ -169,149 +126,98 @@ d3.selectAll("p")
      //   console.log(dateSelect);
         var filtered = dataset.filter(function(d) {
           for (var i = 0; i < dataset.length; i++) {
-           // var dateString = dateSelect.getFullYear()  + "-" + (dateSelect.getMonth() + 1) + "-" + dateSelect.getDate()
-            //console.log(dateSelect);
-           // console.log(dateString);
+      
           return d['date'] === dateSelect;
           }
         })
         //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
 var barDataset = [[]];
 var songNames = [''];
-        console.log(filtered);
+       // console.log(filtered);
         for (var i = 0; i < filtered.length; i++) {
-          var arrayObj = [parseInt(filtered[i].Streams)/1000000.0, filtered[i]['Track Name']]
-         // barDataset.push(parseInt(filtered[i].Streams)/1000000.0)
-          //songNames.push(filtered[i]['Track Name'])
-         // barDataset.remove()
+          var arrayObj = [parseInt(filtered[i].Streams), filtered[i]['Track Name']]
+       
           barDataset[i] = arrayObj;
         
          }
-
-
          var barPadding = 1;
 
-  var margin = {
-    top: 15,
-    right: 25,
-    bottom: 30,
-    left: 60
-};
-
-w= 960 - margin.left - margin.right;
-    h = 500 - margin.top - margin.bottom;
-
-    //set the ranges
-    var y = d3.scaleBand()
-              .range([h, 0])
-              .padding(0.1);
+         var margin = {
+           top: 15,
+           right: 25,
+           bottom: 30,
+           left: 60
+       };
+       
+       w= 960 - margin.left - margin.right;
+           h = 500 - margin.top - margin.bottom;
+       
+           //set the ranges
+           var y = d3.scaleBand()
+                     .range([h, 0])
+                     .padding(0.1);
+           
+           var x = d3.scaleLinear()
+                     .range([0, w]);
+           
+       //Create SVG element
+       
+       var svg = d3.select("body").append("svg")
+           .attr("width", w + margin.left + margin.right)
+           .attr("height", h + margin.top + margin.bottom)
+         .append("g")
+           .attr("transform", 
+                 "translate(" + margin.left + "," + margin.top + ")");
+       
+       
     
-    var x = d3.scaleLinear()
-              .range([0, w]);
-    
-//Create SVG element
-
-var svg = d3.select("body").append("svg")
-    .attr("width", w + margin.left + margin.right)
-    .attr("height", h + margin.top + margin.bottom)
-  .append("g")
-    .attr("transform", 
-          "translate(" + margin.left + "," + margin.top + ")");
-          //barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
-          //barDataset.sort();
-/*
-          barDataset = [
-            [parseInt("4323160")/1000000.0,'1'], 
-            [ parseInt("4275439")/1000000.0, '2'],
-            [ parseInt("3947420")/1000000.0, '3'], 
-            [ parseInt("3307383")/1000000.0, '4'], 
-            [ parseInt("3188386")/1000000.0, '5'], 
-            [ parseInt("2896056")/1000000.0, '6'], 
-            [ parseInt("2642425")/1000000.0, '7'], 
+       // Scale the range of the data in the domains
+       x.domain([0, d3.max(barDataset, function(d){ return d[0]; })])
+       y.domain(d3.range(1, barDataset.length + 1));
+       
             
-          [parseInt("2598097")/1000000.0, '8'], 
-          [ parseInt("2512089")/1000000.0, '9'], 
-          [ parseInt("2419735")/1000000.0, '10']];
-*/
-          /*
-var svg = d3.select("body")
-.append("svg")
-.attr("width", w)
-.attr("height", h);
-*/
-
-//
-/*
-var yScale = d3.scaleBand()
-.domain(d3.range(barDataset.length))
-.rangeRound([0, w])
-.paddingInner(0.05);
-
-var xScale = d3.scaleLinear()
-.domain([0, d3.max(barDataset, function(d) { return d.value; })])
-.range([0, h]);
-
-*/
- //Select…
- var bars = svg.selectAll("rect")
- .data(barDataset);
- 
-var barDataset = [[]];
-var songNames = [''];
-        console.log(filtered);
-        for (var i = 0; i < filtered.length; i++) {
-          var arrayObj = [parseInt(filtered[i].Streams)/1000000.0, filtered[i]['Track Name']]
-         // barDataset.push(parseInt(filtered[i].Streams)/1000000.0)
-          //songNames.push(filtered[i]['Track Name'])
-         // barDataset.remove()
-          barDataset[i] = arrayObj;
+            //Select…
+            var bars = svg.selectAll("rect")
+              .data(barDataset);
+            
         
-         }
-
-
-// Scale the range of the data in the domains
-x.domain([0, d3.max(barDataset, function(d){ return d[0]; })])
-y.domain(d3.range(1, barDataset.length + 1));
-//y.domain([0, d3.max(data, function(d) { return d.sales; })]);
-
-
-    
-     
-    
-     
- 
- bars.enter().append("rect")
-   .attr("class", "bar")
-  // .attr("x", function(d) { return x(d[1]); })
-   .attr("width", function(d) {return x(d[0]); } )
-   .attr("y", function(d) { 
-    return y(d[1]); 
-  
-  })
-  .attr("fill", function(d) {
-    return "rgb(0, 0, " + (d[0] * 10) + ")";
-  })
-   .attr("height", y.bandwidth())
-   .merge(bars)	//Update…
+        bars.enter().append("rect")
+          .attr("class", "bar")
+          .attr("width", function(d) {return x(d[0]); } )
+          .attr("y", function(d) { 
+           return y(d[1]); 
+         })
+         .attr("fill", function(d) {
+           return "rgb(0, 0, " + (d[0] * 10) + ")";
+         })
+          .attr("height", y.bandwidth())
+          .merge(bars)	//Update…
            .transition()
            .duration(500)
            .attr("y", function(d) {
             return y(d[1]);
            })
-           .attr("width", function(d) {return x(d[0]); } )
+           .attr("width", function(d) { return x(d[0]); } )
            .attr("height", y.bandwidth());
    
 
+       
+        
+
+
+    
+ 
+/*
     // add the x Axis
   svg.append("g")
-  .attr("transform", "translate(0," + h + ")")
+  //.attr("transform", "translate(0," + h + ")")
   .call(d3.axisBottom(x));
 
 // add the y Axis
 svg.append("g")
   .call(d3.axisLeft(y).tickFormat(""));
 
-
+*/
   svg.selectAll("text.value")
   .data(barDataset)
   .enter()
@@ -665,32 +571,11 @@ var svg = d3.select("body").append("svg")
           [ parseInt("2419735"), '10']];
 
 
-          /*
-var svg = d3.select("body")
-.append("svg")
-.attr("width", w)
-.attr("height", h);
-*/
 
-//
-/*
-var yScale = d3.scaleBand()
-.domain(d3.range(barDataset.length))
-.rangeRound([0, w])
-.paddingInner(0.05);
-
-var xScale = d3.scaleLinear()
-.domain([0, d3.max(barDataset, function(d) { return d.value; })])
-.range([0, h]);
-
-*/
 // Scale the range of the data in the domains
 x.domain([0, d3.max(barDataset, function(d){ return d[0]; })])
 y.domain(d3.range(1, barDataset.length + 1));
-//y.domain([0, d3.max(data, function(d) { return d.sales; })]);
 
-
-    
      
      //Select…
      var bars = svg.selectAll("rect")
@@ -703,7 +588,6 @@ y.domain(d3.range(1, barDataset.length + 1));
    .attr("width", function(d) {return x(d[0]); } )
    .attr("y", function(d) { 
     return y(d[1]); 
-  
   })
   .attr("fill", function(d) {
     return "rgb(0, 0, " + (d[0] * 10) + ")";
