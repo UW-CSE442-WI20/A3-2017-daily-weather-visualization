@@ -200,11 +200,10 @@ var dateDropdown = d3.select("#vis-container-date")
                 return x(d[0]) - 8;
             })
             .attr("font-family", "sans-serif")
-            .attr("font-size", "10px")
-            .attr("fill", "red");
-
-    });
-
+            .attr("font-size", "14px")
+            .attr("font-weight", 550)
+            .attr("fill", "black")
+        });
 
 
 
@@ -307,13 +306,12 @@ var bars = svg.selectAll("rect")
 
 bars.enter().append("rect")
     .attr("class", "bar")
-    //.attr("x", function(d) { return x(d.sales); })
     .attr("width", function (d) { return x(d[0]); })
     .attr("y", function (d) {
         return y(d[1]);
     })
     .attr("fill", function (d) {
-        return "rgb(0, 0, " + (d[0] * 10) + ")";
+        return "rgb(30, 215, 96)";
     })
     .attr("height", y.bandwidth());
 
@@ -340,8 +338,6 @@ svg.selectAll("text.value")
     .append("text")
     .text(function (d) {
         return songNames[parseInt(d[1]) - 1];
-
-        //d[1];
     })
     .attr("text-anchor", "end")
     .attr("y", function (d, i) {
@@ -351,7 +347,8 @@ svg.selectAll("text.value")
         return x(d[0]) - 8;
     })
     .attr("font-family", "sans-serif")
-    .attr("font-size", "10px")
-    .attr("fill", "red");
+    .attr("font-size", "14px")
+    .attr("font-weight", 550)
+    .attr("fill", "black");
 
 
