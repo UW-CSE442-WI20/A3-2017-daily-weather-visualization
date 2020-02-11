@@ -1,9 +1,28 @@
-/* SLider Styles */
+/* Slider Styles */
 #slider text {
-    text-anchor: end;
-    transform: rotate(-90deg);   
+    /*transform: rotate(-90deg);
+    text-anchor: end;*/
 }
 /* Slider Styles */
+
+/* Play Button Styles */
+#play-button {
+   background: #4CAF50;
+   border-radius: 3px;
+   border: none;
+   color: white;
+   margin: 0;
+   padding: 0 12px;
+   width: 60px;
+   cursor: pointer;
+   height: 30px;
+}
+
+#play-button:hover {
+   background-color: orange;;
+}
+/* Play Button Styles */
+
 
 
 /* Navigation Bar Styles */

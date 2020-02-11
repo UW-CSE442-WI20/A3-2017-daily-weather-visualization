@@ -38,9 +38,8 @@ var sliderDate = "";
             .sliderBottom()
             .min(d3.min(weeks2019))
             .max(d3.max(weeks2019))
-            .step(7)
-            .width(1700)
-            .tickFormat(d3.timeFormat('%Y-%m-%d'))
+            .width(1500)
+            .tickFormat(d3.timeFormat('%m-%d'))
             .tickValues(weeks2019)
             .displayValue(false)
             .on('onchange', val => {
@@ -53,13 +52,14 @@ var sliderDate = "";
           gTime = d3
             .select('div#slider')
             .append('svg')
-            .attr('width', 1800)
+            .attr('width', 1600)
             .attr('height', 100)
             .append('g')
             .attr('transform', 'translate(30,30)');
     
           gTime.call(sliderTime);
-    
+            
+          d3.svg.a
           //initializes date shown on screen
           d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
          // module.exports.sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
