@@ -61,19 +61,24 @@ var getDateArray = function(start, end) {
 }
 
 var dateArr = getDateArray(startDate, endDate);
+//const data1 = await d3.csv("../top10perCountry2019/streamsglobal10.csv");
 
-d3.csv("../top10perCountry2019/streamsglobal10.csv", function(error, data) {
+
+d3.csv("../top10perCountry2019/streamsglobal10.csv").then(function(data) {
+  /*
   if (error && error.target.status === 404) {
     console.log("File not found")
   }
   if(data.length === 0){
   console.log("File empty")
   }
+  */
   var i;
   headerNames = d3.keys(data[0]);
 
   for (i = 0; i < data.length; i++) {
       console.log(data[i]);
+      //console.log(date)
 
   }
   dataset = data;
