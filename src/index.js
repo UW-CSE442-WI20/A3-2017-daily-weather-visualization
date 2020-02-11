@@ -123,6 +123,7 @@ setTimeout(function(){
       .insert("select", "svg")
       .on("change", function(){
        dateSelect = d3.select(this).property('value');
+       console.log(localStorage.getItem('currDate'));
     //   dateSelect = d3.select("#vis-container-date").property('text');
 
      //   console.log(dateSelect);

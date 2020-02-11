@@ -45,7 +45,9 @@ var sliderDate = "";
             .displayValue(false)
             .on('onchange', val => {
               d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(val));
-              window[sliderDate ] =  d3.timeFormat('%Y-%m-%d')(val);
+              window[sliderDate] =  d3.timeFormat('%Y-%m-%d')(val);
+              //console.log(window[sliderDate]);
+              localStorage.setItem('currDate', window[sliderDate]);
             });
     
           gTime = d3
