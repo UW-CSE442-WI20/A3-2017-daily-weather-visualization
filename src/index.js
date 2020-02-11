@@ -139,14 +139,10 @@ d3.selectAll("p")
       //console.log(dateSelect);
         
           fileName = "../top10perCountry2019/streams" + countriesList[index] + "10.csv";
-      
-          d3.csv(fileName, function(error, data) {
-            if (error && error.target.status === 404) {
-              console.log("File not found")
-            }
-            if(data.length === 0){
-            console.log("File empty")
-            }
+          
+          
+          d3.csv(fileName).then(function(data) {
+            
             var i;
             headerNames = d3.keys(data[0]);
           
@@ -387,6 +383,10 @@ d3.selectAll("p")
         return d['date'] === "2019-12-30";
         }
       })
+
+    //  var sourceFile = require('./slider.js');
+console.log(window.sliderDate);
+
       
      //console.log(filtered.length);
      //for (var i = 0; i < dataset.length; i++) {
@@ -623,3 +623,8 @@ d3.selectAll("p")
           .attr("font-family", "sans-serif")
           .attr("font-size", "10px")
           .attr("fill", "black");
+          
+
+
+var sourceFile = require('./slider.js');
+console.log(sourceFile.sliderDate);

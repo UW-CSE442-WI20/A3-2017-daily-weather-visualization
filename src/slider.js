@@ -1,3 +1,5 @@
+var sliderDate = "";
+
 "use strict";
 (function() {
 
@@ -38,6 +40,7 @@
             .tickValues(weeks2019)
             .on('onchange', val => {
               d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(val));
+              window[sliderDate ] =  d3.timeFormat('%Y-%m-%d')(val);
             });
     
           var gTime = d3
@@ -52,7 +55,19 @@
     
           //initializes date shown on screen
           d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
+         // module.exports.sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
+         sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
+   
+         //window[sliderDate ] = variables[varName ];
+       //  window[sliderDate ] = sliderDate;
+          
     }
+    
+      
+    
+
+
+
 
     /**
      *  Make sure to always add a descriptive comment above
@@ -64,3 +79,5 @@
     }
 
 })();
+//window[sliderDate ] = variables[varName ];
+
