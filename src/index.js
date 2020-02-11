@@ -156,7 +156,7 @@ d3.selectAll("p")
       });
 
 
-      var songNames = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+      var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', '5', '6', '7', '8', '9', '10'];
       //var songNames = ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
 
 
@@ -650,7 +650,7 @@ var svg = d3.select("body").append("svg")
           "translate(" + margin.left + "," + margin.top + ")");
           //barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
           //barDataset.sort();
-
+          var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', 'fjndskfsd', 'fdsnjk', 'fdnsjk dnfjks', 'fdsj k', 'csdjkdsjk', 'dsjsdnmsdnm'];
           barDataset = [
             [parseInt("4323160")/1000000.0,'1'], 
             [ parseInt("4275439")/1000000.0, '2'],
@@ -663,6 +663,7 @@ var svg = d3.select("body").append("svg")
           [parseInt("2598097")/1000000.0, '8'], 
           [ parseInt("2512089")/1000000.0, '9'], 
           [ parseInt("2419735")/1000000.0, '10']];
+
 
           /*
 var svg = d3.select("body")
@@ -724,7 +725,9 @@ svg.append("g")
   .enter()
   .append("text")
   .text(function(d) {
-      return d[1];
+      return songNames[parseInt(d[1]) - 1];
+      
+      //d[1];
   })
   .attr("text-anchor", "end")
   .attr("y", function(d, i) {
