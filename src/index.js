@@ -194,7 +194,7 @@ var songNames = [''];
   var margin = {
     top: 15,
     right: 25,
-    bottom: 15,
+    bottom: 30,
     left: 60
 };
 
@@ -625,7 +625,7 @@ var yScale = d3.scaleLinear()
   var margin = {
     top: 15,
     right: 25,
-    bottom: 15,
+    bottom: 30,
     left: 60
 };
 
@@ -652,17 +652,17 @@ var svg = d3.select("body").append("svg")
           //barDataset.sort();
           var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', 'fjndskfsd', 'fdsnjk', 'fdnsjk dnfjks', 'fdsj k', 'csdjkdsjk', 'dsjsdnmsdnm'];
           barDataset = [
-            [parseInt("4323160")/1000000.0,'1'], 
-            [ parseInt("4275439")/1000000.0, '2'],
-            [ parseInt("3947420")/1000000.0, '3'], 
-            [ parseInt("3307383")/1000000.0, '4'], 
-            [ parseInt("3188386")/1000000.0, '5'], 
-            [ parseInt("2896056")/1000000.0, '6'], 
-            [ parseInt("2642425")/1000000.0, '7'], 
+            [parseInt("4323160"),'1'], 
+            [ parseInt("4275439"), '2'],
+            [ parseInt("3947420"), '3'], 
+            [ parseInt("3307383"), '4'], 
+            [ parseInt("3188386"), '5'], 
+            [ parseInt("2896056"), '6'], 
+            [ parseInt("2642425"), '7'], 
             
-          [parseInt("2598097")/1000000.0, '8'], 
-          [ parseInt("2512089")/1000000.0, '9'], 
-          [ parseInt("2419735")/1000000.0, '10']];
+          [parseInt("2598097"), '8'], 
+          [ parseInt("2512089"), '9'], 
+          [ parseInt("2419735"), '10']];
 
 
           /*
@@ -710,10 +710,16 @@ y.domain(d3.range(1, barDataset.length + 1));
   })
    .attr("height", y.bandwidth());
 
+ 
+
     // add the x Axis
   svg.append("g")
   .attr("transform", "translate(0," + h + ")")
-  .call(d3.axisBottom(x));
+  .call(d3.axisBottom(x)
+        .ticks(10));
+       // .tickFormat(d3.format("s")));
+  //.call(d3.axisBottom(x).ticks(10, "K"));
+
 
 // add the y Axis
 svg.append("g")
