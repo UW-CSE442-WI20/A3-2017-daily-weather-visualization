@@ -64,10 +64,5 @@ rect {
 }
 
 rect:hover {
-<<<<<<< HEAD
-    fill:orange;
-}
-=======
     fill:rgb(18, 145, 18);
 }
->>>>>>> master_npm
