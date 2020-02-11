@@ -22,11 +22,6 @@ var sliderDate = "";
         for(var i = 0; i < elements.length; i++) {
           
         }*/
-
-        //
-        document.getElementById("play").onclick(function() {
-            d3.sliderBottom.value = new Date(2019, 0, 1 + 7);
-        });
     };
 
     function playSlider() {
