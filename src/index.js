@@ -44,6 +44,8 @@ var x = d3.scaleLinear()
 var barDataset;
 var songNames;
 
+var svg;
+
 //--------------------------------// end globals
 
 function loadInitialData() {
@@ -66,23 +68,87 @@ function loadInitialData() {
         dataset = data;
     });
 }
-loadInitialData();
 
-function updateGraph(barDataset, songNames) {
-    //set the ranges
-    var y = d3.scaleBand()
-        .range([h, 0])
-        .padding(0.1);
+function initSVG() {
+    svg = d3.select("body").append("svg")
+        .attr("width", w + margin.left + margin.right)
+        .attr("height", h + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
 
-    var x = d3.scaleLinear()
-        .range([0, w]);
 
     // Scale the range of the data in the domains
     x.domain([0, d3.max(barDataset, function (d) { return d[0]; })])
     y.domain(d3.range(1, barDataset.length + 1));
 
-    // updateBars(barDataset);
-    // updateSVG(svg, barDataset, songNames);
+    //Select…
+    var bars = svg.selectAll("rect")
+        .data(barDataset);
+
+    bars.enter().append("rect")
+        .attr("class", "bar")
+        .attr("width", function (d) { return x(d[0]); })
+        .attr("y", function (d) {
+            return y(d[1]);
+        })
+        .attr("fill", function () {
+            return "rgb(30, 215, 96)";
+        })
+        .attr("height", y.bandwidth());
+
+    // add the x Axis
+    svg.append("g")
+        .attr("transform", "translate(0," + h + ")")
+        .call(d3.axisBottom(x)
+            .ticks(10));
+
+    // add the y Axis
+    svg.append("g")
+        .call(d3.axisLeft(y).tickFormat(""));
+
+
+    svg.selectAll("text.value")
+        .data(barDataset)
+        .enter()
+        .append("text")
+        .text(function (d) {
+            return songNames[parseInt(d[1]) - 1];
+        })
+        .attr("text-anchor", "end")
+        .attr("y", function (d, i) {
+            return (9 - i) * (h / barDataset.length) + 27;
+        })
+        .attr("x", function (d) {
+            var index = d[1];
+            var streams = barDataset[index - 1][0];
+            return x(streams) - 8;
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "14px")
+        .attr("font-weight", 550)
+        .attr("fill", "black");
+}
+
+loadInitialData();
+initSVG();
+
+function updateGraph(filtered) {
+    var barDataset = [[]];
+    var songNames = [''];
+    for (var i = 0; i < filtered.length; i++) {
+        var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
+        var name = filtered[i]['Track Name'];
+        if (filtered[i]['Track Name'].length > 30) {
+            name = name.substring(0, 31) + "...";
+        }
+        songNames[i] = name;
+        barDataset[i] = arrayObj;
+    }
+
+    // Scale the range of the data in the domains
+    x.domain([0, d3.max(barDataset, function (d) { return d[0]; })])
+    y.domain(d3.range(1, barDataset.length + 1));
 
     var bars = svg.selectAll("rect")
         .data(barDataset);
@@ -204,7 +270,6 @@ function updateSVG(svg, barDataset, songNames) {
         .attr("font-size", "14px")
         .attr("font-weight", 550)
         .attr("fill", "black");
-
 }
 
 
@@ -235,7 +300,6 @@ dateSelect = dateArr[0];
 var countryDropdown = d3.select("#vis-container-country")
     .insert("select", "svg")
     .on("change", function () {
-
         var country = d3.select(this).property('value');
 
 
@@ -244,20 +308,11 @@ var countryDropdown = d3.select("#vis-container-country")
 
         // load new csv, and update graph
         d3.csv(fileName).then(function (data) {
+            dataset = data;
             var filtered = data.filter(function (d) {
                 return d['date'] === dateSelect;
             })
-
-            // fetch the tracks and populate barDataset
-            var barDataset = [[]];
-            var songNames = [''];
-            for (var i = 0; i < filtered.length; i++) {
-                var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
-                songNames[i] = filtered[i]['Track Name'];
-                barDataset[i] = arrayObj;
-            }
-            dataset = data;
-            updateGraph(barDataset, songNames);
+            updateGraph(filtered);
         });
     });
 
@@ -272,15 +327,7 @@ var dateDropdown = d3.select("#vis-container-date")
                 return d['date'] === dateSelect;
             }
         })
-        var barDataset = [[]];
-        var songNames = [''];
-
-        for (var i = 0; i < filtered.length; i++) {
-            var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
-            songNames[i] = filtered[i]['Track Name'];
-            barDataset[i] = arrayObj;
-        }
-        updateGraph(barDataset, songNames);
+        updateGraph(filtered);
     });
 
 // populate the country dropdown
@@ -293,8 +340,6 @@ countryDropdown.selectAll("option")
     })
     .text(function (d) {
         return d[0].toUpperCase() + d.slice(1, d.length); // capitalize 1st letter
-
-
     });
 
 // populate the date dropdown
@@ -305,66 +350,6 @@ dateDropdown.selectAll("option")
     .text(function (d) {
         return d;
     });
-
-
-var svg = d3.select("body").append("svg")
-    .attr("width", w + margin.left + margin.right)
-    .attr("height", h + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
-
-
-// Scale the range of the data in the domains
-x.domain([0, d3.max(barDataset, function (d) { return d[0]; })])
-y.domain(d3.range(1, barDataset.length + 1));
-
-//Select…
-var bars = svg.selectAll("rect")
-    .data(barDataset);
-
-bars.enter().append("rect")
-    .attr("class", "bar")
-    .attr("width", function (d) { return x(d[0]); })
-    .attr("y", function (d) {
-        return y(d[1]);
-    })
-    .attr("fill", function () {
-        return "rgb(30, 215, 96)";
-    })
-    .attr("height", y.bandwidth());
-
-// add the x Axis
-svg.append("g")
-    .attr("transform", "translate(0," + h + ")")
-    .call(d3.axisBottom(x)
-        .ticks(10));
-
-// add the y Axis
-svg.append("g")
-    .call(d3.axisLeft(y).tickFormat(""));
-
-
-svg.selectAll("text.value")
-    .data(barDataset)
-    .enter()
-    .append("text")
-    .text(function (d) {
-        return songNames[parseInt(d[1]) - 1];
-    })
-    .attr("text-anchor", "end")
-    .attr("y", function (d, i) {
-        return  (9 - i) * (h / barDataset.length) + 27;
-    })
-    .attr("x", function (d) {
-        var index = d[1];
-        var streams = barDataset[index - 1][0];
-        return x(streams) - 8;
-    })
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "14px")
-    .attr("font-weight", 550)
-    .attr("fill", "black");
 
 
 // SLIDER STUFF !!
@@ -421,20 +406,7 @@ svg.selectAll("text.value")
                         return d['date'] === dateSelect;
                     }
                 })
-
-                var barDataset = [[]];
-                var songNames = [''];
-                for (var i = 0; i < filtered.length; i++) {
-                    var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
-                    var name = filtered[i]['Track Name'];
-                    if (filtered[i]['Track Name'].length > 30) {
-                        name = name.substring(0, 31) + "...";
-                    }
-                    songNames[i] = name;
-                    barDataset[i] = arrayObj;
-                }
-
-                updateGraph(barDataset, songNames)
+                updateGraph(filtered);
             });
 
         gTime = d3
