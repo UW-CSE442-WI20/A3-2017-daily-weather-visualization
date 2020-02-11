@@ -94,9 +94,11 @@ setTimeout(function(){
       //console.log(dateSelect);
         
           fileName = "../top10perCountry2019/streams" + countriesList[index] + "10.csv";
+
       
           d3.csv(fileName).then(function(data) {
   
+
             var i;
             headerNames = d3.keys(data[0]);
           
@@ -315,6 +317,7 @@ var svg = d3.select("body").append("svg")
 
 
 
+
 // Scale the range of the data in the domains
 x.domain([0, d3.max(barDataset, function(d){ return d[0]; })])
 y.domain(d3.range(1, barDataset.length + 1));
@@ -353,6 +356,7 @@ svg.append("g")
   .call(d3.axisLeft(y).tickFormat(""));
 
 
+
   svg.selectAll("text.value")
   .data(barDataset)
   .enter()
@@ -372,4 +376,5 @@ svg.append("g")
   .attr("font-family", "sans-serif")
   .attr("font-size", "10px")
   .attr("fill", "red");
+
 
