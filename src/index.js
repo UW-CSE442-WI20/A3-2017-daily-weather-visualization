@@ -726,16 +726,18 @@ svg.append("g")
   .text(function(d) {
       return d[1];
   })
-  .attr("text-anchor", "start")
+  .attr("text-anchor", "end")
   .attr("y", function(d, i) {
-      return i * (h / barDataset.length ) + 27;
+      return (9 - i) * (h / barDataset.length ) + 27;
   })
   .attr("x", function(d) {
-      return -20;
+      return x(d[0]) ;
   })
   .attr("font-family", "sans-serif")
   .attr("font-size", "10px")
-  .attr("fill", "black");
+  .attr("fill", "red");
+
+
 /*
 
      //Enter…
