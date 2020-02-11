@@ -11,9 +11,7 @@ var sliderDate = "";
 
 
 
-    /**
-     *  Make to document your window.onload set up
-     */
+  
     window.onload = function() {
         initSlider();
 
@@ -23,6 +21,8 @@ var sliderDate = "";
           
         }*/
     };
+
+
 
     function playSlider() {
         
@@ -69,4 +69,6 @@ var sliderDate = "";
     }
 })();
 //window[sliderDate ] = variables[varName ];
+
+
 
