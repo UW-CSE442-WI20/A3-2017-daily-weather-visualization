@@ -263,7 +263,6 @@ var songNames = [];
           .attr("font-size", "10px")
           .attr("fill", "white");
 
-
           svg.selectAll("text.value")
           .data(songNames)
           .enter()
