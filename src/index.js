@@ -210,6 +210,7 @@ var songNames = [''];
        
     
 
+  svg.selectAll("g").remove();
     // add the x Axis
   svg.append("g")
   .attr("transform", "translate(0," + h + ")")

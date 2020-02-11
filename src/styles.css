@@ -35,3 +35,7 @@ li a:hover:not(.active) {
    background-color: #4CAF50;
 }
 /* Navigation Styles */
+
+rect:hover {
+    fill:orange;
+}
