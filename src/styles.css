@@ -1,9 +1,28 @@
-/* SLider Styles */
+/* Slider Styles */
 #slider text {
-    text-anchor: end;
-    transform: rotate(-90deg);   
+    /*transform: rotate(-90deg);
+    text-anchor: end;*/
 }
 /* Slider Styles */
+
+/* Play Button Styles */
+#play-button {
+   background: #4CAF50;
+   border-radius: 3px;
+   border: none;
+   color: white;
+   margin: 0;
+   padding: 0 12px;
+   width: 60px;
+   cursor: pointer;
+   height: 30px;
+}
+
+#play-button:hover {
+   background-color: orange;;
+}
+/* Play Button Styles */
+
 
 
 /* Navigation Bar Styles */
@@ -32,9 +51,17 @@ li a:hover:not(.active) {
 }
   
 .active {
-   background-color: #4CAF50;
+    color: black;
+   background-color: #1ed760;
 }
 /* Navigation Styles */
+
+rect {
+    -moz-transition: all 0.25s;
+    -o-transition: all 0.25s;
+    -webkit-transition: all 0.25s;
+    transition: all 0.25s;
+}
 
 rect:hover {
     fill:orange;
