@@ -115,7 +115,7 @@ setTimeout(function(){
       });
 
 
-      var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', '5', '6', '7', '8', '9', '10'];
+      //var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', '5', '6', '7', '8', '9', '10'];
       //var songNames = ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
 
 
@@ -133,16 +133,23 @@ setTimeout(function(){
           return d['date'] === dateSelect;
           }
         })
+        
         //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
 var barDataset = [[]];
 var songNames = [''];
        // console.log(filtered);
         for (var i = 0; i < filtered.length; i++) {
-          var arrayObj = [parseInt(filtered[i].Streams), ( i + 1)+""];
-       songNames[i] = filtered[i]['Track Name'];
+          var arrayObj = [parseInt(filtered[i].Streams), ( 10 - i )+""];
+          var name = filtered[i]['Track Name'];
+          if (filtered[i]['Track Name'].length > 30) {
+            name = name.substring(0,31) + "...";
+          }
+
+       songNames[i] = name; //filtered[i]['Track Name'];
           barDataset[i] = arrayObj;
         
          }
+         console.log(songNames);
          var barPadding = 1;
 
          var margin = {
@@ -192,7 +199,7 @@ var songNames = [''];
            return y(d[1]); 
          })
          .attr("fill", function(d) {
-           return "rgb(0, 0, " + (d[0] * 10) + ")";
+          return "rgb(30, 215, 96)";
          })
           .attr("height", y.bandwidth())
           .merge(bars)	//Update…
@@ -208,9 +215,10 @@ var songNames = [''];
            .attr("height", y.bandwidth());
    
 
-       
+           svg.selectAll("text").remove();
     
 
+  svg.selectAll("g").remove();
     // add the x Axis
   svg.append("g")
   .attr("transform", "translate(0," + h + ")")
@@ -224,6 +232,30 @@ svg.append("g")
 
 
 
+
+
+  svg.selectAll("text.value")
+  .data(barDataset)
+  .enter()
+  .append("text")
+  .text(function(d) {
+      return songNames[parseInt(d[1]) - 1];
+      
+      //d[1];
+  })
+  .attr("text-anchor", "end")
+  .attr("y", function(d, i) {
+      return (9 - i) * (h / barDataset.length ) + 27;
+  })
+  .attr("x", function(d) {
+    var index = d[1];
+    var streams = barDataset[index - 1][0];
+    return x(streams) - 8 ;
+  })
+  .attr("font-family", "sans-serif")
+  .attr("font-size", "14px")
+  .attr("font-weight", 550)
+  .attr("fill", "black");
 
              
 
@@ -302,19 +334,29 @@ var svg = d3.select("body").append("svg")
           "translate(" + margin.left + "," + margin.top + ")");
           //barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
           //barDataset.sort();
-          var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', 'fjndskfsd', 'fdsnjk', 'fdnsjk dnfjks', 'fdsj k', 'csdjkdsjk', 'dsjsdnmsdnm'];
+          var songNames = ["Sunflower - Spider-Man: Into the Spider-Verse", "thank u, next", "Wow.", "Without Me", "Taki Taki (with Selena Gomez, Ozuna & Cardi B)", "Calma - Remix", "Sweet but Psycho", "MIA (feat. Drake)", "High Hopes", "Happier"];
+/*
+          for (var i = 0; i < songNames.length; i++) {
+            var name = songNames[i];
+            if (songNames[i].length > 30) {
+              name = name.substring(0,31) + "...";
+            }
+  
+         songNames[i] = name; //filtered[i]['Track Name'];
+          }
+          */
           barDataset = [
-            [parseInt("4323160"),'1'], 
-            [ parseInt("4275439"), '2'],
-            [ parseInt("3947420"), '3'], 
-            [ parseInt("3307383"), '4'], 
-            [ parseInt("3188386"), '5'], 
-            [ parseInt("2896056"), '6'], 
-            [ parseInt("2642425"), '7'], 
+            [parseInt("4323160"),'10'], 
+            [ parseInt("4275439"), '9'],
+            [ parseInt("3947420"), '8'], 
+            [ parseInt("3307383"), '7'], 
+            [ parseInt("3188386"), '6'], 
+            [ parseInt("2896056"), '5'], 
+            [ parseInt("2642425"), '4'], 
             
-          [parseInt("2598097"), '8'], 
-          [ parseInt("2512089"), '9'], 
-          [ parseInt("2419735"), '10']];
+          [parseInt("2598097"), '3'], 
+          [ parseInt("2512089"), '2'], 
+          [ parseInt("2419735"), '1']];
 
 
 
@@ -334,10 +376,11 @@ y.domain(d3.range(1, barDataset.length + 1));
    //.attr("x", function(d) { return x(d.sales); })
    .attr("width", function(d) {return x(d[0]); } )
    .attr("y", function(d) { 
+
     return y(d[1]); 
   })
   .attr("fill", function(d) {
-    return "rgb(0, 0, " + (d[0] * 10) + ")";
+    return "rgb(30, 215, 96)";
   })
    .attr("height", y.bandwidth());
 
@@ -372,10 +415,13 @@ svg.append("g")
       return (9 - i) * (h / barDataset.length ) + 27;
   })
   .attr("x", function(d) {
-      return x(d[0]) ;
+      var index = d[1];
+      var streams = barDataset[index - 1][0];
+      return x(streams) - 8 ;
   })
   .attr("font-family", "sans-serif")
-  .attr("font-size", "10px")
-  .attr("fill", "red");
+  .attr("font-size", "14px")
+  .attr("font-weight", 550)
+  .attr("fill", "black");
 
 
