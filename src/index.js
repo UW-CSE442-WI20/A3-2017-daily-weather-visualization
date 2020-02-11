@@ -115,7 +115,7 @@ setTimeout(function(){
       });
 
 
-      var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', '5', '6', '7', '8', '9', '10'];
+      //var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', '5', '6', '7', '8', '9', '10'];
       //var songNames = ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
 
 
@@ -133,6 +133,7 @@ setTimeout(function(){
           return d['date'] === dateSelect;
           }
         })
+        
         //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
 var barDataset = [[]];
 var songNames = [''];
@@ -143,6 +144,7 @@ var songNames = [''];
           barDataset[i] = arrayObj;
         
          }
+         console.log(songNames);
          var barPadding = 1;
 
          var margin = {
@@ -225,7 +227,27 @@ svg.append("g")
 
 
 
+svg.selectAll("text").remove();
 
+  svg.selectAll("text.value")
+  .data(barDataset)
+  .enter()
+  .append("text")
+  .text(function(d) {
+      return songNames[parseInt(d[1]) - 1];
+      
+      //d[1];
+  })
+  .attr("text-anchor", "end")
+  .attr("y", function(d, i) {
+      return (9 - i) * (h / barDataset.length ) + 27;
+  })
+  .attr("x", function(d) {
+      return x(d[0] ) - 8 ;
+  })
+  .attr("font-family", "sans-serif")
+  .attr("font-size", "10px")
+  .attr("fill", "red");
              
 
        console.log(barDataset);
@@ -303,7 +325,8 @@ var svg = d3.select("body").append("svg")
           "translate(" + margin.left + "," + margin.top + ")");
           //barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
           //barDataset.sort();
-          var songNames = ['fdmsklfmdklsafds', 'djnskfsd', 'fdsk', '4cdnsksd cdjnk', 'fjndskfsd', 'fdsnjk', 'fdnsjk dnfjks', 'fdsj k', 'csdjkdsjk', 'dsjsdnmsdnm'];
+          var songNames = ["Sunflower - Spider-Man: Into the Spider-Verse", "thank u, next", "Wow.", "Without Me", "Taki Taki (with Selena Gomez, Ozuna & Cardi B)", "Calma - Remix", "Sweet but Psycho", "MIA (feat. Drake)", "High Hopes", "Happier"];
+
           barDataset = [
             [parseInt("4323160"),'1'], 
             [ parseInt("4275439"), '2'],
@@ -373,7 +396,7 @@ svg.append("g")
       return (9 - i) * (h / barDataset.length ) + 27;
   })
   .attr("x", function(d) {
-      return x(d[0]) ;
+      return x(d[0]) - 8 ;
   })
   .attr("font-family", "sans-serif")
   .attr("font-size", "10px")
