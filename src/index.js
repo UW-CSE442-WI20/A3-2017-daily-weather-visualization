@@ -19,8 +19,6 @@ var countriesName = [	'Canada',	'Denmark',	'Greece',	'Iceland',	'Mexico',	'Phili
 'Brazil',	'Germany',	'United Kingdom',	'Israel',	'Peru',	'Slovakia',	'global'];
 
 
-var dates = [	'1/1/19', '12/31/19'];
-//var dateArray = getDateArray(new Date('2019-01-01'),new Date('2020-01-01'))
 var dateSelect;
 var dataset = [];
 var headerNames;
@@ -140,13 +138,8 @@ d3.selectAll("p")
         
           fileName = "../top10perCountry2019/streams" + countriesList[index] + "10.csv";
       
-          d3.csv(fileName, function(error, data) {
-            if (error && error.target.status === 404) {
-              console.log("File not found")
-            }
-            if(data.length === 0){
-            console.log("File empty")
-            }
+          d3.csv(fileName).then(function(data) {
+  
             var i;
             headerNames = d3.keys(data[0]);
           
@@ -163,7 +156,9 @@ d3.selectAll("p")
       });
 
 
-      
+      var songNames = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+      //var songNames = ['10', '9', '8', '7', '6', '5', '4', '3', '2', '1'];
+
 
       var dateDropdown = d3.select("#vis-container-date")
       .insert("select", "svg")
@@ -181,15 +176,165 @@ d3.selectAll("p")
           }
         })
         //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
-var barDataset = [];
-var songNames = [];
+var barDataset = [[]];
+var songNames = [''];
         console.log(filtered);
-       
         for (var i = 0; i < filtered.length; i++) {
-          barDataset.push(parseInt(filtered[i].Streams)/1000000.0)
-          songNames.push(filtered[i]['Track Name'])
+          var arrayObj = [parseInt(filtered[i].Streams)/1000000.0, filtered[i]['Track Name']]
+         // barDataset.push(parseInt(filtered[i].Streams)/1000000.0)
+          //songNames.push(filtered[i]['Track Name'])
+         // barDataset.remove()
+          barDataset[i] = arrayObj;
         
          }
+
+
+         var barPadding = 1;
+
+  var margin = {
+    top: 15,
+    right: 25,
+    bottom: 15,
+    left: 60
+};
+
+w= 960 - margin.left - margin.right;
+    h = 500 - margin.top - margin.bottom;
+
+    //set the ranges
+    var y = d3.scaleBand()
+              .range([h, 0])
+              .padding(0.1);
+    
+    var x = d3.scaleLinear()
+              .range([0, w]);
+    
+//Create SVG element
+
+var svg = d3.select("body").append("svg")
+    .attr("width", w + margin.left + margin.right)
+    .attr("height", h + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+          //barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
+          //barDataset.sort();
+/*
+          barDataset = [
+            [parseInt("4323160")/1000000.0,'1'], 
+            [ parseInt("4275439")/1000000.0, '2'],
+            [ parseInt("3947420")/1000000.0, '3'], 
+            [ parseInt("3307383")/1000000.0, '4'], 
+            [ parseInt("3188386")/1000000.0, '5'], 
+            [ parseInt("2896056")/1000000.0, '6'], 
+            [ parseInt("2642425")/1000000.0, '7'], 
+            
+          [parseInt("2598097")/1000000.0, '8'], 
+          [ parseInt("2512089")/1000000.0, '9'], 
+          [ parseInt("2419735")/1000000.0, '10']];
+*/
+          /*
+var svg = d3.select("body")
+.append("svg")
+.attr("width", w)
+.attr("height", h);
+*/
+
+//
+/*
+var yScale = d3.scaleBand()
+.domain(d3.range(barDataset.length))
+.rangeRound([0, w])
+.paddingInner(0.05);
+
+var xScale = d3.scaleLinear()
+.domain([0, d3.max(barDataset, function(d) { return d.value; })])
+.range([0, h]);
+
+*/
+ //Select…
+ var bars = svg.selectAll("rect")
+ .data(barDataset);
+ 
+var barDataset = [[]];
+var songNames = [''];
+        console.log(filtered);
+        for (var i = 0; i < filtered.length; i++) {
+          var arrayObj = [parseInt(filtered[i].Streams)/1000000.0, filtered[i]['Track Name']]
+         // barDataset.push(parseInt(filtered[i].Streams)/1000000.0)
+          //songNames.push(filtered[i]['Track Name'])
+         // barDataset.remove()
+          barDataset[i] = arrayObj;
+        
+         }
+
+
+// Scale the range of the data in the domains
+x.domain([0, d3.max(barDataset, function(d){ return d[0]; })])
+y.domain(d3.range(1, barDataset.length + 1));
+//y.domain([0, d3.max(data, function(d) { return d.sales; })]);
+
+
+    
+     
+    
+     
+ 
+ bars.enter().append("rect")
+   .attr("class", "bar")
+  // .attr("x", function(d) { return x(d[1]); })
+   .attr("width", function(d) {return x(d[0]); } )
+   .attr("y", function(d) { 
+    return y(d[1]); 
+  
+  })
+  .attr("fill", function(d) {
+    return "rgb(0, 0, " + (d[0] * 10) + ")";
+  })
+   .attr("height", y.bandwidth())
+   .merge(bars)	//Update…
+           .transition()
+           .duration(500)
+           .attr("y", function(d) {
+            return y(d[1]);
+           })
+           .attr("width", function(d) {return x(d[0]); } )
+           .attr("height", y.bandwidth());
+   
+
+    // add the x Axis
+  svg.append("g")
+  .attr("transform", "translate(0," + h + ")")
+  .call(d3.axisBottom(x));
+
+// add the y Axis
+svg.append("g")
+  .call(d3.axisLeft(y).tickFormat(""));
+
+
+  svg.selectAll("text.value")
+  .data(barDataset)
+  .enter()
+  .append("text")
+  .text(function(d) {
+      return d[1];
+  })
+  .attr("text-anchor", "start")
+  .attr("y", function(d, i) {
+      return i * (h / barDataset.length ) + 27;
+  })
+  .attr("x", function(d) {
+      return -20;
+  })
+  .attr("font-family", "sans-serif")
+  .attr("font-size", "10px")
+  .attr("fill", "black");
+/*
+
+
+
+
+/*
          console.log(songNames);
          var w = 500;
          var h = 300;
@@ -201,6 +346,20 @@ var songNames = [];
     
          xScale.domain(d3.range(barDataset.length));
          yScale.domain([0, d3.max(barDataset, function(d) { return d.value * 50; })]);
+
+         	//Define X axis
+			var xAxis = d3.axisBottom()
+      .scale(xScale)
+      .ticks(5);
+
+//Define Y axis
+var yAxis = d3.axisLeft()
+      .scale(yScale)
+      .ticks(5);
+
+      
+      var padding = 10;
+     
     
          //Select…
          var bars = svg.selectAll("rect")
@@ -233,14 +392,20 @@ var songNames = [];
            .attr("height", function(d) {
              return d*50;
            });
-           
-	//Exit…
-  bars.exit()
-  .transition()
-  .duration(500)
-  .attr("x", -xScale.bandwidth())
-  .remove();
 
+            //Create X axis
+			svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(0," + (h + 5) + ")")
+      .call(xAxis);
+    
+    //Create Y axis
+    svg.append("g")
+      .attr("class", "axis")
+      .attr("transform", "translate(" - 5 + ",0)")
+      .call(yAxis);
+           
+	
 
   svg.selectAll("text").remove();
           //Select…
@@ -281,41 +446,8 @@ var songNames = [];
           .attr("font-size", "10px")
           .attr("fill", "red");
 
+*/
 
-
-          /*
-          var labels = svg.selectAll("text")
-          .data(barDataset);
-
-          //Exit…
-          labels.exit()
-            .transition()
-            .duration(500)
-            .remove();
-        
-        //Enter…
-        labels.enter()
-          .append("text")
-          .text(function(d) {
-            return d.value;
-          })
-          .attr("text-anchor", "middle")
-          .attr("x", w)
-          .attr("y", function(d) {
-            return h - d *20 + 14;
-          })						
-           .attr("font-family", "sans-serif")
-           .attr("font-size", "11px")
-           .attr("fill", "white")
-           .remove(labels)
-           .merge(labels)	//Update…
-           .transition()
-           .duration(500)
-           .attr("x", function(d, i) {
-            return xScale(i) + xScale.bandwidth() / 2;
-           });
-
-					  */
              
 
        console.log(barDataset);
@@ -372,92 +504,6 @@ for (var i = 0; i < dataset.length; i++) {
 }
 */
 
-//On click, update with new data			
-d3.selectAll("p")
-  .on("click", function() {
-
-    //See which p was clicked
-    var paragraphID = d3.select(this).attr("id");
-    
-    //Decide what to do next
-    if (paragraphID == "us") {
-      //filtered_data(paragraphID);
-      var filtered = dataset.filter(function(d) {
-        for (var i = 0; i < dataset.length; i++) {
-        return d['date'] === "2019-12-30";
-        }
-      })
-      
-     //console.log(filtered.length);
-     //for (var i = 0; i < dataset.length; i++) {
-     
-    // console.log(dataset[i]);
-     //}
-     var w = 500;
-     var h = 300;
-     var barPadding = 1;
-     console.log(headerNames);
-     console.log(filtered);
-     //Update scale domains
-     //var barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
-
-     xScale.domain(d3.range(barDataset.length));
-     yScale.domain([0, d3.max(barDataset, function(d) { return d.value; })]);
-
-     //Select…
-     var bars = svg.selectAll("rect")
-       .data(barDataset);
-     
-     //Enter…
-     bars.enter()
-       .append("rect")
-       .attr("x", w)
-       .attr("y", function(d) {
-         return h - d * 50;
-       })
-       .attr("width", xScale.bandwidth())
-       .attr("height", function(d) {
-         return d * 50;
-       })
-       .attr("fill", function(d) {
-         return "rgb(0, 0, " + (d.value * 10) + ")";
-       })
-       .merge(bars)	//Update…
-       .transition()
-       .duration(500)
-       .attr("x", function(d, i) {
-         return xScale(i);
-       })
-       .attr("y", function(d) {
-         return h - d *50 ;
-       })
-       .attr("width", xScale.bandwidth())
-       .attr("height", function(d) {
-         return d*50;
-       });
-       
-       svg.selectAll("text")
-       .data(barDataset)
-       .enter()
-       .append("text")
-       .text(function(d) {
-           return d;
-       })
-       .attr("text-anchor", "middle")
-       .attr("x", function(d, i) {
-           return i * (w / 10) + (w / 10 - barPadding) / 2;
-       })
-       .attr("y", function(d) {
-           return h - (d * 50) + 14;
-       })
-       .attr("font-family", "sans-serif")
-       .attr("font-size", "10px")
-       .attr("fill", "white");
-      
-    } else {
-      console.log("global")
-    }
-  });
 
 
  
@@ -465,92 +511,38 @@ d3.selectAll("p")
 
 
  /*
- //Create SVG element
- var svg = d3.select("body")
-       .append("svg")
-       .attr("width", w)
-       .attr("height", h);
-
- svg.selectAll("rect")
-    .data(dataset)
-    .enter()
-    .append("rect")
-    .attr("x", function(d, i) {
-      return 20;
-        //return i * (w / barDataset.length);
-    })
-    .attr("y", function(d) {
-        return 20;
-        //return h - (d / 400);
-    })
-    .attr("width", w / barDataset.length - barPadding)
-    .attr("height", function(d) {
-        return d * 4;
-    })
-    .attr("fill", function(d) {
-     return "rgb(0, 0, " + Math.round(d * 10) + ")";
-    });
-
- svg.selectAll("text")
-    .data(dataset)
-    .enter()
-    .append("text")
-    .text(function(d) {
-        return d;
-    })
-    .attr("text-anchor", "middle")
-    .attr("x", function(d, i) {
-        return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
-    })
-    .attr("y", function(d) {
-        return h - (d * 4) + 14;
-    })
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "11px")
-    .attr("fill", "white");
-    */
 			//Width and height
 			var w = 500;
 			var h = 300;
 			var barPadding = 1;
-			
-			var dataset = [ 5, 10, 13, 19, 21, 25, 22, 18, 15, 13];
-             
-             
-             
-              var xScale = d3.scaleBand()
-							.domain(d3.range(dataset.length))
-							.rangeRound([0, w])
-							.paddingInner(0.05);
-			
-			var yScale = d3.scaleLinear()
-							.domain([0, d3.max(dataset, function(d) { return d.value; })])
-							.range([0, h]);
-			//Create SVG element
-			var svg = d3.select("body")
-						.append("svg")
-						.attr("width", w)
-						.attr("height", h);
+		
 
-			svg.selectAll("rect")
-			   .data(dataset)
-			   .enter()
-			   .append("rect")
-			   .attr("x", function(d, i) {
-			   		return i * (w / dataset.length);
-			   })
-			   .attr("y", function(d) {
-			   		return h - (d * 4);
-			   })
-			   .attr("width", w / dataset.length - barPadding)
-			   .attr("height", function(d) {
-			   		return d * 4;
-			   })
-			   .attr("fill", function(d) {
-					return "rgb(0, 0, " + Math.round(d * 10) + ")";
-			   });
+//Create SVG element
+var svg = d3.select("body")
+.append("svg")
+.attr("width", w)
+.attr("height", h);
+var xScale = d3.scaleBand()
+.domain(d3.range(dataset.length))
+.rangeRound([0, w])
+.paddingInner(0.05);
+
+var yScale = d3.scaleLinear()
+.domain([0, d3.max(dataset, function(d) { return d.value; })])
+.range([0, h]);
+
+
          barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
-    
+         var margin = {
+          top: 15,
+          right: 25,
+          bottom: 15,
+          left: 60
+      };
+
+      var width = 960 - margin.left - margin.right,
+          height = 500 - margin.top - margin.bottom;
+         
          xScale.domain(d3.range(barDataset.length));
          yScale.domain([0, d3.max(barDataset, function(d) { return d.value; })]);
     
@@ -561,12 +553,12 @@ d3.selectAll("p")
          //Enter…
          bars.enter()
            .append("rect")
-           .attr("x", w)
-           .attr("y", function(d) {
+           .attr("y", w)
+           .attr("x", function(d) {
              return h - d * 50;
            })
-           .attr("width", xScale.bandwidth())
-           .attr("height", function(d) {
+           .attr("height", xScale.bandwidth())
+           .attr("width", function(d) {
              return d * 50;
            })
            .attr("fill", function(d) {
@@ -623,3 +615,194 @@ d3.selectAll("p")
           .attr("font-family", "sans-serif")
           .attr("font-size", "10px")
           .attr("fill", "black");
+*/
+
+	//Width and height
+ // var w = 300;
+ // var h = 500;
+  var barPadding = 1;
+
+  var margin = {
+    top: 15,
+    right: 25,
+    bottom: 15,
+    left: 60
+};
+
+w= 960 - margin.left - margin.right;
+    h = 500 - margin.top - margin.bottom;
+
+    //set the ranges
+    var y = d3.scaleBand()
+              .range([h, 0])
+              .padding(0.1);
+    
+    var x = d3.scaleLinear()
+              .range([0, w]);
+    
+//Create SVG element
+
+var svg = d3.select("body").append("svg")
+    .attr("width", w + margin.left + margin.right)
+    .attr("height", h + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", 
+          "translate(" + margin.left + "," + margin.top + ")");
+          //barDataset = [parseInt("4323160")/1000000.0, parseInt("4275439")/1000000.0, parseInt("3947420")/1000000.0, parseInt("3307383")/1000000.0, parseInt("3188386")/1000000.0, parseInt("2896056")/1000000.0, parseInt("2642425")/1000000.0, parseInt("2598097")/1000000.0, parseInt("2512089")/1000000.0, parseInt("2419735")/1000000.0];
+          //barDataset.sort();
+
+          barDataset = [
+            [parseInt("4323160")/1000000.0,'1'], 
+            [ parseInt("4275439")/1000000.0, '2'],
+            [ parseInt("3947420")/1000000.0, '3'], 
+            [ parseInt("3307383")/1000000.0, '4'], 
+            [ parseInt("3188386")/1000000.0, '5'], 
+            [ parseInt("2896056")/1000000.0, '6'], 
+            [ parseInt("2642425")/1000000.0, '7'], 
+            
+          [parseInt("2598097")/1000000.0, '8'], 
+          [ parseInt("2512089")/1000000.0, '9'], 
+          [ parseInt("2419735")/1000000.0, '10']];
+
+          /*
+var svg = d3.select("body")
+.append("svg")
+.attr("width", w)
+.attr("height", h);
+*/
+
+//
+/*
+var yScale = d3.scaleBand()
+.domain(d3.range(barDataset.length))
+.rangeRound([0, w])
+.paddingInner(0.05);
+
+var xScale = d3.scaleLinear()
+.domain([0, d3.max(barDataset, function(d) { return d.value; })])
+.range([0, h]);
+
+*/
+// Scale the range of the data in the domains
+x.domain([0, d3.max(barDataset, function(d){ return d[0]; })])
+y.domain(d3.range(1, barDataset.length + 1));
+//y.domain([0, d3.max(data, function(d) { return d.sales; })]);
+
+
+    
+     
+     //Select…
+     var bars = svg.selectAll("rect")
+       .data(barDataset);
+     
+ 
+ bars.enter().append("rect")
+   .attr("class", "bar")
+   //.attr("x", function(d) { return x(d.sales); })
+   .attr("width", function(d) {return x(d[0]); } )
+   .attr("y", function(d) { 
+    return y(d[1]); 
+  
+  })
+  .attr("fill", function(d) {
+    return "rgb(0, 0, " + (d[0] * 10) + ")";
+  })
+   .attr("height", y.bandwidth());
+
+    // add the x Axis
+  svg.append("g")
+  .attr("transform", "translate(0," + h + ")")
+  .call(d3.axisBottom(x));
+
+// add the y Axis
+svg.append("g")
+  .call(d3.axisLeft(y).tickFormat(""));
+
+
+  svg.selectAll("text.value")
+  .data(barDataset)
+  .enter()
+  .append("text")
+  .text(function(d) {
+      return d[1];
+  })
+  .attr("text-anchor", "start")
+  .attr("y", function(d, i) {
+      return i * (h / barDataset.length ) + 27;
+  })
+  .attr("x", function(d) {
+      return -20;
+  })
+  .attr("font-family", "sans-serif")
+  .attr("font-size", "10px")
+  .attr("fill", "black");
+/*
+
+     //Enter…
+     bars.enter()
+       .append("rect")
+       .attr("y", w)
+       .attr("x", function(d) {
+         return d * 50;
+       })
+       .attr("height", yScale.bandwidth())
+       .attr("width", function(d) {
+         return d * 50;
+       })
+       .attr("fill", function(d) {
+         return "rgb(0, 0, " + (d.value * 10) + ")";
+       })
+       .merge(bars)	//Update…
+       .transition()
+       .duration(500)
+       .attr("y", function(d, i) {
+         return yScale(i);
+       })
+       .attr("x", function(d) {
+         return d *50 ;
+       })
+       .attr("height", yScale.bandwidth())
+       .attr("width", function(d) {
+         return d * 50;
+       });
+       */
+       /*
+       svg.selectAll("text.title")
+       .data(barDataset)
+       .enter()
+       .append("text")
+       .text(function(d) {
+           return Math.round(d*1000000);
+       })
+       .attr("text-anchor", "middle")
+       .attr("x", function(d, i) {
+           return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
+       })
+       .attr("y", function(d) {
+           return h - (d * 50) + 14;
+       })
+       .attr("font-family", "sans-serif")
+       .attr("font-size", "10px")
+       .attr("fill", "white");
+
+
+
+      svg.selectAll("text.value")
+      .data(songNames)
+      .enter()
+      .append("text")
+      .text(function(d) {
+          return d;
+      })
+      .attr("text-anchor", "middle")
+      .attr("x", function(d, i) {
+          return i * (w / barDataset.length) + (w / barDataset.length - barPadding) / 2;
+      })
+      .attr("y", function(d) {
+          return h - (( 10 - songNames.indexOf(d )) * 30) + 14;
+      })
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("fill", "black");
+
+      */

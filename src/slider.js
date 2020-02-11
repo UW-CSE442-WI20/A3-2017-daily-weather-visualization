@@ -4,9 +4,7 @@
     // MODULE GLOBAL VARIABLES AND HELPER FUNCTIONS CAN BE PLACED
     // HERE
 
-    /**
-     *  Make to document your window.onload set up
-     */
+  
     window.onload = function() {
         initSlider();
         document.getElementById("play").onclick(function() {
@@ -14,11 +12,7 @@
         });
     };
 
-    /**
-     *  Make sure to always add a descriptive comment above
-     *  every function detailing what it's purpose is
-     *  Use JSDoc format with @param and @return.
-     */
+    
     function playSlider() {
         
     }
@@ -54,13 +48,9 @@
           d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
     }
 
-    /**
-     *  Make sure to always add a descriptive comment above
-     *  every function detailing what it's purpose is
-     *  Use JSDoc format with @param and @return.
-     */
+    
     function exampleFunction2(someVariable) {
-        /* SOME CODE */
+     
     }
 
 })();
