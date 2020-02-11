@@ -194,7 +194,7 @@ var songNames = [''];
            return y(d[1]); 
          })
          .attr("fill", function(d) {
-           return "rgb(0, 0, " + (d[0] * 10) + ")";
+          return "rgb(30, 215, 96)";
          })
           .attr("height", y.bandwidth())
           .merge(bars)	//Update…
@@ -210,7 +210,7 @@ var songNames = [''];
            .attr("height", y.bandwidth());
    
 
-       
+           svg.selectAll("text").remove();
     
 
   svg.selectAll("g").remove();
@@ -227,7 +227,7 @@ svg.append("g")
 
 
 
-svg.selectAll("text").remove();
+
 
   svg.selectAll("text.value")
   .data(barDataset)
@@ -246,8 +246,10 @@ svg.selectAll("text").remove();
       return x(d[0] ) - 8 ;
   })
   .attr("font-family", "sans-serif")
-  .attr("font-size", "10px")
-  .attr("fill", "red");
+  .attr("font-size", "14px")
+  .attr("font-weight", 550)
+  .attr("fill", "black");
+
              
 
        console.log(barDataset);
@@ -361,7 +363,7 @@ y.domain(d3.range(1, barDataset.length + 1));
     return y(d[1]); 
   })
   .attr("fill", function(d) {
-    return "rgb(0, 0, " + (d[0] * 10) + ")";
+    return "rgb(30, 215, 96)";
   })
    .attr("height", y.bandwidth());
 
@@ -399,7 +401,8 @@ svg.append("g")
       return x(d[0]) - 8 ;
   })
   .attr("font-family", "sans-serif")
-  .attr("font-size", "10px")
-  .attr("fill", "red");
+  .attr("font-size", "14px")
+  .attr("font-weight", 550)
+  .attr("fill", "black");
 
 
