@@ -77,7 +77,7 @@ function setDateArray() {
 function init() {
 
     songNames = []
-    barDataset = [[],[],[],[],[],[],[],[],[],[]]
+    barDataset = [[], [], [], [], [], [], [], [], [], []]
 
 
     // load globl data
@@ -91,7 +91,7 @@ function init() {
         updateGraph(filtered);
     });
     setDateArray();
-    
+
 
     // populate the country dropdown
     countryDropdown.selectAll("option")
@@ -113,7 +113,7 @@ function init() {
         .text(function (d) {
             return d;
         });
-    
+
     initSVG();
 
 }
@@ -149,7 +149,7 @@ function initSVG() {
         .attr("transform", "translate(0," + h + ")")
         .attr("color", "white")
         .call(d3.axisBottom(x));
-           // .ticks(10));
+    // .ticks(10));
 
     // add the y Axis
     svg.append("g")
@@ -200,10 +200,11 @@ function updateSVG(fullSongNames, barDataset, artistNames, songNames) {
         .text(function (d) {
             var idx = 10 - parseInt(d[1]);
             // NOTE: date is slider date (not dropdown date)
-            return "\"" + fullSongNames[idx] + "\" by " + artistNames[idx] + ": " + d[0] + " streams on " + window[slider.getDate()];
+            return "\"" + fullSongNames[idx] + "\" by " + artistNames[idx] + ": "
+                + d[0] + " streams on " + slider.getDate();
         })
 
-   svg.selectAll("text.value")
+    svg.selectAll("text.value")
         .data(barDataset)
         .enter()
         .append("text")
@@ -329,49 +330,49 @@ slider = function () {
         var weeks2019 = d3.range(0, 53).map(function (d) {
             return new Date(2019, 0, 1 + 7 * d);
         });
-/*
-
-var playButton = d3.select("#play-button");
-var moving = false;
-var currentValue = 0;
-var targetValue = 1100 - margin.left - margin.right;
-playButton
-.on("click", function() {
-var button = d3.select(this);
-if (button.text() == "Pause") {
-  moving = false;
-  clearInterval(timer);
-  // timer = 0;
-  button.text("Play");
-} else {
-  moving = true;
-  timer = setInterval(step, 100);
-  button.text("Pause");
-}
-console.log("Slider moving: " + moving);
-})
-
-function update(h) {
-  // update position and text of label according to slider scale
-  d3.select('div#slider').attr("cx", x(h));
-  
- 
-}
-
-
-function step() {
-  update(x.invert(currentValue));
-  currentValue = currentValue + (targetValue/151);
-  if (currentValue > targetValue) {
-    moving = false;
-    currentValue = 0;
-    clearInterval(timer);
-    // timer = 0;
-    playButton.text("Play");
-    console.log("Slider moving: " + moving);
-  }
-}
-*/
+        /*
+        
+        var playButton = d3.select("#play-button");
+        var moving = false;
+        var currentValue = 0;
+        var targetValue = 1100 - margin.left - margin.right;
+        playButton
+        .on("click", function() {
+        var button = d3.select(this);
+        if (button.text() == "Pause") {
+          moving = false;
+          clearInterval(timer);
+          // timer = 0;
+          button.text("Play");
+        } else {
+          moving = true;
+          timer = setInterval(step, 100);
+          button.text("Pause");
+        }
+        console.log("Slider moving: " + moving);
+        })
+        
+        function update(h) {
+          // update position and text of label according to slider scale
+          d3.select('div#slider').attr("cx", x(h));
+          
+         
+        }
+        
+        
+        function step() {
+          update(x.invert(currentValue));
+          currentValue = currentValue + (targetValue/151);
+          if (currentValue > targetValue) {
+            moving = false;
+            currentValue = 0;
+            clearInterval(timer);
+            // timer = 0;
+            playButton.text("Play");
+            console.log("Slider moving: " + moving);
+          }
+        }
+        */
 
         sliderTime = d3
             .sliderBottom()
@@ -397,7 +398,7 @@ function step() {
 
         gTime = d3
             .select('div#slider')
-            .append('svg') 
+            .append('svg')
             .attr('width', 1350 - margin.left - margin.right)
             .attr('height', 132 - margin.top - margin.bottom)
             .append('g')
