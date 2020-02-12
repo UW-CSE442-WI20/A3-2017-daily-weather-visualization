@@ -49,7 +49,7 @@ var svg;
 //--------------------------------// end globals
 
 function loadInitialData() {
-    // TODO -- Not hardcode this!!
+    // TODO -- Not hardcode this (make sure this is correct info)!!
     songNames = ["Sunflower - Spider-Man: Into the Spider-Verse", "thank u, next", "Wow.", "Without Me", "Taki Taki (with Selena Gomez, Ozuna & Cardi B)", "Calma - Remix", "Sweet but Psycho", "MIA (feat. Drake)", "High Hopes", "Happier"];
     barDataset = [
         [parseInt("4323160"), '10'],
@@ -62,6 +62,7 @@ function loadInitialData() {
         [parseInt("2598097"), '3'],
         [parseInt("2512089"), '2'],
         [parseInt("2419735"), '1']];
+    // TODO -- add tooltip stuff for initial load too
 
     // load globl data
     d3.csv("streamsglobal10.csv").then(function (data) {
@@ -136,13 +137,17 @@ initSVG();
 function updateGraph(filtered) {
     var barDataset = [[]];
     var songNames = [''];
+    var fullSongNames = [''];
+    var artistNames = [''];
     for (var i = 0; i < filtered.length; i++) {
         var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
         var name = filtered[i]['Track Name'];
+        fullSongNames[i] = name;
         if (filtered[i]['Track Name'].length > 30) {
             name = name.substring(0, 31) + "...";
         }
         songNames[i] = name;
+        artistNames[i] = filtered[i]['Artist'];
         barDataset[i] = arrayObj;
     }
 
@@ -186,6 +191,15 @@ function updateGraph(filtered) {
     // add the y Axis
     svg.append("g")
         .call(d3.axisLeft(y).tickFormat(""));
+
+    svg.selectAll("title").remove();
+    svg.selectAll("rect")
+        .append("title")
+        .text(function (d) {
+            var idx = 10 - parseInt(d[1]);
+            // NOTE: date is slider date (not dropdown date)
+            return "\"" + fullSongNames[idx] + "\" by " + artistNames[idx] + ": " + d[0] + " streams on " + window[sliderDate];
+        })
 
     svg.selectAll("text.value")
         .data(barDataset)
@@ -323,9 +337,7 @@ var dateDropdown = d3.select("#vis-container-date")
         dateSelect = d3.select(this).property('value');
 
         var filtered = dataset.filter(function (d) {
-            for (var i = 0; i < dataset.length; i++) {
-                return d['date'] === dateSelect;
-            }
+            return d['date'] === dateSelect;
         })
         updateGraph(filtered);
     });
@@ -402,9 +414,7 @@ dateDropdown.selectAll("option")
                 console.log(localStorage.getItem('currDate'));
 
                 var filtered = dataset.filter(function (d) {
-                    for (var i = 0; i < dataset.length; i++) {
-                        return d['date'] === dateSelect;
-                    }
+                    return d['date'] === dateSelect;
                 })
                 updateGraph(filtered);
             });
