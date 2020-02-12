@@ -49,6 +49,8 @@ li a {
    text-align: center;
    padding: 14px 16px;
    text-decoration: none;
+   font-family: Helvetica;
+   font-weight: 700;
 }
   
 li a:hover:not(.active) {
@@ -70,4 +72,21 @@ rect {
 
 rect:hover {
     fill:orange;
+}
+
+p#value {
+   font-weight: 900;
+   font-size: 60px;
+   font-family: Helvetica;
+   color: #99B793;
+   position: absolute;
+   left: 1140px;
+   top: 640px;
+}
+
+h1 {
+   font-family: Helvetica;
+   color: #99B793;
+   font-weight: 900;
+   font-size: 38px;
 }
