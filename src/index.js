@@ -27,7 +27,7 @@ var margin = {
     top: 15,
     right: 25,
     bottom: 30,
-    left: 60
+    left: 10
 };
 var w = 960 - margin.left - margin.right;
 var h = 500 - margin.top - margin.bottom;
@@ -101,12 +101,12 @@ function initSVG() {
     // add the x Axis
     svg.append("g")
         .attr("transform", "translate(0," + h + ")")
-        .call(d3.axisBottom(x)
-            .ticks(10));
+        .call(d3.axisBottom(x));
+           // .ticks(10));
 
     // add the y Axis
     svg.append("g")
-        .call(d3.axisLeft(y).tickFormat(""));
+        .call(d3.axisLeft(y).tickSize(0).tickFormat(""));
 
 
     svg.selectAll("text.value")
@@ -146,7 +146,7 @@ function updateSVG(fullSongNames, barDataset, artistNames, songNames) {
 
     // add the y Axis
     svg.append("g")
-        .call(d3.axisLeft(y).tickFormat(""));
+        .call(d3.axisLeft(y).tickSize(0).tickFormat(""));
 
     svg.selectAll("title").remove();
     svg.selectAll("rect")
@@ -336,6 +336,49 @@ dateDropdown.selectAll("option")
         weeks2019 = d3.range(0, 53).map(function (d) {
             return new Date(2019, 0, 1 + 7 * d);
         });
+/*
+
+var playButton = d3.select("#play-button");
+var moving = false;
+var currentValue = 0;
+var targetValue = 1100 - margin.left - margin.right;
+playButton
+.on("click", function() {
+var button = d3.select(this);
+if (button.text() == "Pause") {
+  moving = false;
+  clearInterval(timer);
+  // timer = 0;
+  button.text("Play");
+} else {
+  moving = true;
+  timer = setInterval(step, 100);
+  button.text("Pause");
+}
+console.log("Slider moving: " + moving);
+})
+
+function update(h) {
+  // update position and text of label according to slider scale
+  d3.select('div#slider').attr("cx", x(h));
+  
+ 
+}
+
+
+function step() {
+  update(x.invert(currentValue));
+  currentValue = currentValue + (targetValue/151);
+  if (currentValue > targetValue) {
+    moving = false;
+    currentValue = 0;
+    clearInterval(timer);
+    // timer = 0;
+    playButton.text("Play");
+    console.log("Slider moving: " + moving);
+  }
+}
+*/
 
         sliderTime = d3
             .sliderBottom()
@@ -358,6 +401,7 @@ dateDropdown.selectAll("option")
                         return d['date'] === dateSelect;
                     }
                 })
+
                 updateGraph(filtered)
             });
 
@@ -379,3 +423,4 @@ dateDropdown.selectAll("option")
 
     }
 })();
+
