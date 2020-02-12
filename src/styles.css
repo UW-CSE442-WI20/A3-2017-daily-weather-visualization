@@ -1,8 +1,13 @@
 /* Slider Styles */
 #slider text {
-    /*transform: rotate(-90deg);
-    text-anchor: end;*/
+    transform: rotate(-90deg);
+    text-anchor: end;
 }
+
+#date-display p{
+   margin: 0;
+}
+
 /* Slider Styles */
 
 /* Play Button Styles */
