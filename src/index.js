@@ -257,7 +257,7 @@ var getDateArray = function (start, end) {
     }
     return arr;
 }
-var dateArr = getDateArray(new Date("2019-01-02"), new Date("2020-01-01"));
+var dateArr = getDateArray(new Date("2019-01-01"), new Date("2020-01-01"));
 dateSelect = dateArr[0];
 
 // update graph based on country dropdown
