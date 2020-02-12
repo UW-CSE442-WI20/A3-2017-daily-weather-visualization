@@ -101,6 +101,7 @@ function initSVG() {
     // add the x Axis
     svg.append("g")
         .attr("transform", "translate(0," + h + ")")
+        .attr("color", "white")
         .call(d3.axisBottom(x)
             .ticks(10));
 
@@ -142,6 +143,7 @@ function updateSVG(fullSongNames, barDataset, artistNames, songNames) {
     svg.selectAll("g").remove();
     svg.append("g")
         .attr("transform", "translate(0," + h + ")")
+        .attr("color", "white")
         .call(d3.axisBottom(x));
 
     // add the y Axis
