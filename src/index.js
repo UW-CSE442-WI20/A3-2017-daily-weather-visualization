@@ -157,7 +157,10 @@ function updateSVG(fullSongNames, barDataset, artistNames, songNames) {
             return "\"" + fullSongNames[idx] + "\" by " + artistNames[idx] + ": " + d[0] + " streams on " + window[sliderDate];
         })
 
-    svg.selectAll("text.value")
+
+
+
+   var labels = svg.selectAll("text.value")
         .data(barDataset)
         .enter()
         .append("text")
@@ -194,8 +197,6 @@ function updateBars(barDataset) {
         })
         .attr("height", y.bandwidth())
         .merge(bars)	//Update…
-        .transition()
-        .duration(500)
         .attr("x", function (d, i) {
             return x(d[1]);
         })
