@@ -29,8 +29,8 @@ var margin = {
     bottom: 30,
     left: 60
 };
-var w = 960 - margin.left - margin.right;
-var h = 500 - margin.top - margin.bottom;
+var w = 1200 - margin.left - margin.right;
+var h = 612 - margin.top - margin.bottom;
 
 //set x and y ranges
 var y = d3.scaleBand()
@@ -341,12 +341,12 @@ dateDropdown.selectAll("option")
             .min(d3.min(weeks2019))
             .max(d3.max(weeks2019))
             .step(28)
-            .width(1020 - margin.left - margin.right)
+            .width(1240 - margin.left - margin.right)
             .tickFormat(d3.timeFormat('%m-%d'))
             .tickValues(weeks2019)
             .displayValue(false)
             .on('onchange', val => {
-                d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(val));
+                d3.select('p#value').text(d3.timeFormat('%m-%d-%Y')(val));
                 window[sliderDate] = d3.timeFormat('%Y-%m-%d')(val);
 
                 dateSelect = d3.timeFormat('%Y-%m-%d')(val);
@@ -363,7 +363,7 @@ dateDropdown.selectAll("option")
         gTime = d3
             .select('div#slider')
             .append('svg') 
-            .attr('width', 1100 - margin.left - margin.right)
+            .attr('width', 1350 - margin.left - margin.right)
             .attr('height', 132 - margin.top - margin.bottom)
             .append('g')
             .attr('transform', 'translate(30,30)');
@@ -373,7 +373,7 @@ dateDropdown.selectAll("option")
         gTime.selectAll("text").attr("dx", "-10px").attr("dy", "-16px");
 
         //initializes date shown on screen
-        d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
+        d3.select('p#value').text(d3.timeFormat('%m-%d-%Y')(sliderTime.value()));
         sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
 
     }
