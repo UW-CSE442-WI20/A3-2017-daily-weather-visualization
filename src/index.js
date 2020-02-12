@@ -19,7 +19,6 @@ var countriesName = ['Canada', 'Denmark', 'Greece', 'Iceland', 'Mexico', 'Philip
     'Brazil', 'Germany', 'United Kingdom', 'Israel', 'Peru', 'Slovakia', 'global'];
 var Countries = (countriesName).slice(0).sort();
 
-var dateSelect;
 var dataset = [];
 
 var barPadding = 1;
@@ -40,34 +39,83 @@ var y = d3.scaleBand()
 var x = d3.scaleLinear()
     .range([0, w]);
 
-// initial -- hardcoded data
+
 var barDataset;
 var songNames;
 
 var svg;
 
+var dateArr;
+var dateSelect;
+
 //--------------------------------// end globals
 
-function loadInitialData() {
-    // TODO -- Not hardcode this (make sure this is correct info)!!
-    songNames = ["Sunflower - Spider-Man: Into the Spider-Verse", "thank u, next", "Wow.", "Without Me", "Taki Taki (with Selena Gomez, Ozuna & Cardi B)", "Calma - Remix", "Sweet but Psycho", "MIA (feat. Drake)", "High Hopes", "Happier"];
-    barDataset = [
-        [parseInt("4323160"), '10'],
-        [parseInt("4275439"), '9'],
-        [parseInt("3947420"), '8'],
-        [parseInt("3307383"), '7'],
-        [parseInt("3188386"), '6'],
-        [parseInt("2896056"), '5'],
-        [parseInt("2642425"), '4'],
-        [parseInt("2598097"), '3'],
-        [parseInt("2512089"), '2'],
-        [parseInt("2419735"), '1']];
-    // TODO -- add tooltip stuff for initial load too
+
+function setDateArray() {
+    start = new Date("2019-01-02")
+    end = new Date("2020-01-01")
+    dateArr = new Array();
+    var dt = new Date(start);
+    while (dt <= end) {
+        var date = new Date(dt);
+
+        var dateString = date.getFullYear() + "-";
+        if (date.getMonth() < 9) {
+            dateString = dateString + "0";
+        }
+        dateString = dateString + (date.getMonth() + 1) + "-";
+        if (date.getDate() < 10) {
+            dateString = dateString + "0";
+        }
+        dateString = dateString + date.getDate();
+        dateArr.push(dateString);
+        dt.setDate(dt.getDate() + 1);
+    }
+    dateSelect = dateArr[0];
+}
+
+function init() {
+
+    songNames = []
+    barDataset = [[],[],[],[],[],[],[],[],[],[]]
+
 
     // load globl data
     d3.csv("streamsglobal10.csv").then(function (data) {
+        slider.initSlider();
+
         dataset = data;
+        var filtered = data.filter(function (d) {
+            return d['date'] === dateSelect;
+        })
+        updateGraph(filtered);
     });
+    setDateArray();
+    
+
+    // populate the country dropdown
+    countryDropdown.selectAll("option")
+        .data(Countries)
+        .enter().append("option")
+        .attr("value", function (d) { return d; })
+        .attr("selected", function (d) {
+            return d === "Global";
+        })
+        .text(function (d) {
+            return d[0].toUpperCase() + d.slice(1, d.length); // capitalize 1st letter
+        });
+
+    // populate the date dropdown
+    dateDropdown.selectAll("option")
+        .data(dateArr)
+        .enter().append("option")
+        .attr("value", function (d) { return d; })
+        .text(function (d) {
+            return d;
+        });
+    
+    initSVG();
+
 }
 
 function initSVG() {
@@ -75,9 +123,7 @@ function initSVG() {
         .attr("width", w + margin.left + margin.right)
         .attr("height", h + margin.top + margin.bottom)
         .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
-
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Scale the range of the data in the domains
     x.domain([0, d3.max(barDataset, function (d) { return d[0]; })])
@@ -131,8 +177,6 @@ function initSVG() {
         .attr("fill", "black");
 }
 
-loadInitialData();
-initSVG();
 
 
 function updateSVG(fullSongNames, barDataset, artistNames, songNames) {
@@ -154,13 +198,10 @@ function updateSVG(fullSongNames, barDataset, artistNames, songNames) {
         .text(function (d) {
             var idx = 10 - parseInt(d[1]);
             // NOTE: date is slider date (not dropdown date)
-            return "\"" + fullSongNames[idx] + "\" by " + artistNames[idx] + ": " + d[0] + " streams on " + window[sliderDate];
+            return "\"" + fullSongNames[idx] + "\" by " + artistNames[idx] + ": " + d[0] + " streams on " + window[slider.getDate()];
         })
 
-
-
-
-   var labels = svg.selectAll("text.value")
+   svg.selectAll("text.value")
         .data(barDataset)
         .enter()
         .append("text")
@@ -209,10 +250,11 @@ function updateBars(barDataset) {
 
 
 function updateGraph(filtered) {
-    var barDataset = [[]];
-    var songNames = [''];
+    barDataset = [[]];
+    songNames = [''];
     var fullSongNames = [''];
-    var artistNames = [''];
+    artistNames = [''];
+
     for (var i = 0; i < filtered.length; i++) {
         var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
         var name = filtered[i]['Track Name'];
@@ -229,36 +271,10 @@ function updateGraph(filtered) {
     x.domain([0, d3.max(barDataset, function (d) { return d[0]; })])
     y.domain(d3.range(1, barDataset.length + 1));
 
-    
     updateBars(barDataset)
     updateSVG(fullSongNames, barDataset, artistNames, songNames);
 }
 
-
-
-
-var getDateArray = function (start, end) {
-    var arr = new Array();
-    var dt = new Date(start);
-    while (dt <= end) {
-        var date = new Date(dt);
-
-        var dateString = date.getFullYear() + "-";
-        if (date.getMonth() < 9) {
-            dateString = dateString + "0";
-        }
-        dateString = dateString + (date.getMonth() + 1) + "-";
-        if (date.getDate() < 10) {
-            dateString = dateString + "0";
-        }
-        dateString = dateString + date.getDate();
-        arr.push(dateString);
-        dt.setDate(dt.getDate() + 1);
-    }
-    return arr;
-}
-var dateArr = getDateArray(new Date("2019-01-02"), new Date("2020-01-01"));
-dateSelect = dateArr[0];
 
 // update graph based on country dropdown
 var countryDropdown = d3.select("#vis-container-country")
@@ -292,48 +308,23 @@ var dateDropdown = d3.select("#vis-container-date")
         updateGraph(filtered);
     });
 
-// populate the country dropdown
-countryDropdown.selectAll("option")
-    .data(Countries)
-    .enter().append("option")
-    .attr("value", function (d) { return d; })
-    .attr("selected", function (d) {
-        return d === "Global";
-    })
-    .text(function (d) {
-        return d[0].toUpperCase() + d.slice(1, d.length); // capitalize 1st letter
-    });
 
-// populate the date dropdown
-dateDropdown.selectAll("option")
-    .data(dateArr)
-    .enter().append("option")
-    .attr("value", function (d) { return d; })
-    .text(function (d) {
-        return d;
-    });
-
-// SLIDER STUFF !!
-"use strict";
-(function () {
-
-    // MODULE GLOBAL VARIABLES AND HELPER FUNCTIONS CAN BE PLACED
-    // HERE
-    var weeks2019;
+slider = function () {
     var sliderTime;
     var gTime;
-
-    window.onload = function () {
-        initSlider();
-    };
+    var date;
 
     function playSlider() {
 
     }
 
+    function getDate() {
+        return d3.timeFormat('%Y-%m-%d')(sliderTime.value());
+    }
+
     // Code inspired/provided by https://github.com/johnwalley/d3-simple-slider v1.5.4 Copyright 2019 John Walley
     function initSlider() {
-        weeks2019 = d3.range(0, 53).map(function (d) {
+        var weeks2019 = d3.range(0, 53).map(function (d) {
             return new Date(2019, 0, 1 + 7 * d);
         });
 
@@ -348,14 +339,11 @@ dateDropdown.selectAll("option")
             .displayValue(false)
             .on('onchange', val => {
                 d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(val));
-                window[sliderDate] = d3.timeFormat('%Y-%m-%d')(val);
-
-                dateSelect = d3.timeFormat('%Y-%m-%d')(val);
-                console.log(localStorage.getItem('currDate'));
+                date = d3.timeFormat('%Y-%m-%d')(val);
 
                 var filtered = dataset.filter(function (d) {
                     for (var i = 0; i < dataset.length; i++) {
-                        return d['date'] === dateSelect;
+                        return d['date'] === date;
                     }
                 })
                 updateGraph(filtered)
@@ -370,12 +358,17 @@ dateDropdown.selectAll("option")
             .attr('transform', 'translate(30,30)');
 
         gTime.call(sliderTime);
-
         gTime.selectAll("text").attr("dx", "-10px").attr("dy", "-16px");
 
-        //initializes date shown on screen
+        // show date at very beginning
         d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
-        sliderDate = d3.timeFormat('%Y-%m-%d')(sliderTime.value());
-
     }
-})();
+
+    return {
+        getDate: getDate,
+        initSlider: initSlider
+    }
+
+}();
+
+init();
