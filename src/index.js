@@ -363,7 +363,6 @@ dateDropdown.selectAll("option")
         return d;
     });
 
-
 // SLIDER STUFF !!
 "use strict";
 (function () {
@@ -374,20 +373,9 @@ dateDropdown.selectAll("option")
     var sliderTime;
     var gTime;
 
-
-
-
     window.onload = function () {
         initSlider();
-
-        /* Trying to reposition axis labels for slider
-        var elements = document.body.getElementsByClassName('tick');
-        for(var i = 0; i < elements.length; i++) {
-          
-        }*/
     };
-
-
 
     function playSlider() {
 
@@ -403,8 +391,10 @@ dateDropdown.selectAll("option")
             .sliderBottom()
             .min(d3.min(weeks2019))
             .max(d3.max(weeks2019))
-            .step(7)
-            .width(1700)
+            .step(28)
+            .width(1020 - margin.left - margin.right)
+            .tickFormat(d3.timeFormat('%m-%d'))
+            .tickValues(weeks2019)
             .displayValue(false)
             .on('onchange', val => {
                 d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(val));
@@ -414,20 +404,37 @@ dateDropdown.selectAll("option")
                 console.log(localStorage.getItem('currDate'));
 
                 var filtered = dataset.filter(function (d) {
-                    return d['date'] === dateSelect;
+                    for (var i = 0; i < dataset.length; i++) {
+                        return d['date'] === dateSelect;
+                    }
                 })
-                updateGraph(filtered);
+
+                var barDataset = [[]];
+                var songNames = [''];
+                for (var i = 0; i < filtered.length; i++) {
+                    var arrayObj = [parseInt(filtered[i].Streams), (10 - i) + ""];
+                    var name = filtered[i]['Track Name'];
+                    if (filtered[i]['Track Name'].length > 30) {
+                        name = name.substring(0, 31) + "...";
+                    }
+                    songNames[i] = name;
+                    barDataset[i] = arrayObj;
+                }
+
+                updateGraph(barDataset, songNames)
             });
 
         gTime = d3
             .select('div#slider')
-            .append('svg')
-            .attr('width', 960 - margin.left - margin.right)
-            .attr('height', 500 - margin.top - margin.bottom)
+            .append('svg') 
+            .attr('width', 1100 - margin.left - margin.right)
+            .attr('height', 132 - margin.top - margin.bottom)
             .append('g')
             .attr('transform', 'translate(30,30)');
 
         gTime.call(sliderTime);
+
+        gTime.selectAll("text").attr("dx", "-10px").attr("dy", "-16px");
 
         //initializes date shown on screen
         d3.select('p#value').text(d3.timeFormat('%Y-%m-%d')(sliderTime.value()));
@@ -435,6 +442,3 @@ dateDropdown.selectAll("option")
 
     }
 })();
-
-
-
